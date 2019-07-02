@@ -17,27 +17,57 @@ namespace fms {
             if (N > 1)
                 a[1] = 1;
         }
+        epsilon(const X* px)
+            : a(px, N)
+        { }
+        epsilon(std::initializer_list<X> il)
+            : a{il}
+        { }
+
         bool operator==(const epsilon& b) const
         {
             return (a == b.a).min() == true;
         }
         bool operator!=(const epsilon& b) const
         {
-            return (a != b.a).min() == false;
+            return !operator==(b);
         }
+        // bool operator< ...
+
+        // n-th derivative
         const X& operator[](size_t n) const
         {
             return a[n];
         }
+
+        epsilon& operator-()
+        {
+            operator*=(X(-1));
+
+            return *this;
+        }
+
         epsilon& operator+=(const epsilon& b)
         {
             a += b.a;
 
             return *this;
         }
+        epsilon& operator+=(const X& b)
+        {
+            a[0] += b;
+
+            return *this;
+        }
         epsilon& operator-=(const epsilon& b)
         {
             a -= b.a;
+
+            return *this;
+        }
+        epsilon& operator-=(const X& b)
+        {
+            a[0] -= b;
 
             return *this;
         }
@@ -60,7 +90,61 @@ namespace fms {
 
             return *this;
         }
+        epsilon& operator*=(const X& b)
+        {
+            a[0] *= b;
+
+            return *this;
+        }
 
     };
 
 } // namespace fms
+
+template<size_t N, class X = double>
+inline fms::epsilon<N,X> operator+(fms::epsilon<N,X> a, const fms::epsilon<N,X>& b)
+{
+    return a += b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator+(fms::epsilon<N, X> a, const X& b)
+{
+    return a += b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator+(const X& a, fms::epsilon<N, X> b)
+{
+    return b += a;
+}
+
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> a, const fms::epsilon<N, X>& b)
+{
+    return a -= b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> a, const X& b)
+{
+    return a -= b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator-(const X& a, fms::epsilon<N, X> b)
+{
+    return -(b -= a);
+}
+
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator*(fms::epsilon<N, X> a, const fms::epsilon<N, X>& b)
+{
+    return a *= b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator*(fms::epsilon<N, X> a, const X& b)
+{
+    return a *= b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator*(const X& a, fms::epsilon<N, X> b)
+{
+    return b *= a;
+}
