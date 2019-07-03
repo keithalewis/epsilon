@@ -75,15 +75,40 @@ void test_mul()
 }
 
 template<class X>
-X poly(const X& x)
+X p(const X& x)
 {
-    return 1. + 2.*x + x*x;
+    return 1. + 2.*x + 3.*x*x;
+}
+template<class X>
+X dp(const X& x)
+{
+    return 2. + 6.*x;
+}
+template<class X>
+X ddp(const X& x)
+{
+    return 6.;
 }
 
 void test_derivative()
 {
-    epsilon<3,double> e(1);
-    auto pe = 1. + 2.*e + 3.*e*e;
+    {
+        epsilon<5,double> e{1,1,1,1,1};
+        e *= e;
+        assert(e[0] == 1);
+        assert(e[1] == 2);
+        assert(e[2] == 4);
+        assert(e[3] == 8);
+        assert(e[4] == 16);
+
+    }
+    {
+        epsilon<3,double> e(1);
+        auto pe = p(e);
+        assert (pe[0] == p(1));
+
+    }
+    //auto pe = 1. + 2.*e + 3.*e*e;
     /*
     assert (pe[0] == 1 + 2*1 + 1*1);
     assert (pe[1] == 2 + 2*1);
