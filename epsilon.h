@@ -34,6 +34,11 @@ namespace fms {
         }
         // bool operator< ...
 
+        // underlying raw valarray
+        const std::valarray<X>& array() const
+        {
+            return a;
+        }
         // n-th derivative
         const X& operator[](size_t n) const
         {
@@ -93,6 +98,39 @@ namespace fms {
         epsilon& operator*=(const X& b)
         {
             a[0] *= b;
+
+            return *this;
+        }
+
+        // a/b = c iff a = b*c = sum_n [sum C(n,j) b_{n-j} c_j] e^n/n!
+        // a_0 = b_0 c_0,
+        //   c_0 = a_0/b_0.
+        // a_1 = b_1 c_0 + b_0 c_1,
+        //   c_1 = (a_1 - b_1 c_0)/b_0.
+        // ...
+        // a_n = C(n,0) b_n c_0 + C(n,1) b_{n-1} c_1 + .... + C(n,n) b_0 c_n,
+        //   c_n = (a_n - C(n,0) b_n c_0 - ... - C(n, n-1) b_1 c_{n-1})/b_0.
+        epsilon& operator/=(const epsilon& b)
+        {
+            std::valarray<X> c(X(0), N);
+            X b0 = b[0];
+            for (int n = 0; n < N; ++n) {
+                X Cnk = 1;
+                c[n] = a[n];
+                for (int k = 0; k < n; ++k) {
+                    c[n] -= Cnk*b.a[k]*c[n-k];
+                    Cnk *= n - k;
+                    Cnk /= k + 1;
+                }
+                c[n] /= b0;
+            }
+            std::swap(c, a);
+
+            return *this;
+        }
+        epsilon& operator/=(const X& b)
+        {
+            a[0] /= b;
 
             return *this;
         }

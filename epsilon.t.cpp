@@ -103,17 +103,21 @@ void test_derivative()
 
     }
     {
-        epsilon<3,double> e(1);
-        auto pe = p(e);
-        assert (pe[0] == p(1));
-
+        epsilon<5,double> e(1.);
+        auto e1 = e;
+        e1 *= e;
+        e1 *= e;
+        e1 *= e;
     }
-    //auto pe = 1. + 2.*e + 3.*e*e;
-    /*
-    assert (pe[0] == 1 + 2*1 + 1*1);
-    assert (pe[1] == 2 + 2*1);
-    assert (pe[2] == 2);
-    */
+    {
+        double x = 1;
+        epsilon<3,double> e(x);
+        auto pe = p(e);
+        auto px = p(x);
+        auto dpx = dp(x);
+        auto ddpx = ddp(x);
+        px = dpx = ddpx;
+    }
 }
 
 int main()
