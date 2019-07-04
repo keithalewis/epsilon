@@ -1,5 +1,6 @@
 // epsilon.t.cpp - test epsilon
 #include <cassert>
+#include "hermite.h"
 #include "epsilon.h"
 using namespace fms;
 
@@ -85,7 +86,7 @@ X dp(const X& x)
     return 2. + 6.*x;
 }
 template<class X>
-X ddp(const X& x)
+X ddp([[maybe_unused]] const X& x)
 {
     return 6.;
 }
@@ -103,11 +104,12 @@ void test_derivative()
 
     }
     {
-        epsilon<5,double> e(1.);
+        epsilon<5,double> e(0.);
         auto e1 = e;
-        e1 *= e;
-        e1 *= e;
-        e1 *= e;
+        e1 *= e; assert(e1 == epsilon<5>({0,0,2,0,0}));
+        e1 *= e; assert(e1 == epsilon<5>({0, 0, 0, 6, 0}));
+        e1 *= e; assert(e1 == epsilon<5>({0, 0, 0, 0, 24}));
+        e1 *= e; assert(e1 == epsilon<5>({0, 0, 0, 0, 0}));
     }
     {
         double x = 1;
@@ -117,6 +119,15 @@ void test_derivative()
         assert(pe[1] == dp(x));
         assert(pe[2] == ddp(x));
     }
+}
+
+void test_hermite()
+{
+    double x;
+    x = 1;
+    assert (Hermite(2,x) == x*x - 1);
+    x = 2;
+    assert (Hermite(2, x) == x*x - 1);
 }
 
 int main()
@@ -139,6 +150,8 @@ int main()
     test_mul<4, double>();
 
     test_derivative();
+
+    test_hermite();
 
     return 0;
 }

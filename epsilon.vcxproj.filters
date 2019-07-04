@@ -18,6 +18,12 @@
     <ClInclude Include="epsilon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="hermite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epsilon.t.cpp">

@@ -1,4 +1,4 @@
-// epsilon.h - Machine precision derivative 
+// epsilon.h - machine precision derivatives 
 #pragma once
 #include <valarray>
 
@@ -14,7 +14,7 @@ namespace fms {
             : a(X(0), N)
         {
             a[0] = x;
-            if (N > 1)
+            if constexpr (N > 1)
                 a[1] = 1;
         }
         epsilon(const X* px)
