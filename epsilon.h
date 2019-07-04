@@ -97,7 +97,7 @@ namespace fms {
         }
         epsilon& operator*=(const X& b)
         {
-            a[0] *= b;
+            a *= b;
 
             return *this;
         }
@@ -130,7 +130,7 @@ namespace fms {
         }
         epsilon& operator/=(const X& b)
         {
-            a[0] /= b;
+            a /= b;
 
             return *this;
         }

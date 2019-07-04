@@ -113,10 +113,9 @@ void test_derivative()
         double x = 1;
         epsilon<3,double> e(x);
         auto pe = p(e);
-        auto px = p(x);
-        auto dpx = dp(x);
-        auto ddpx = ddp(x);
-        px = dpx = ddpx;
+        assert(pe[0] == p(x));
+        assert(pe[1] == dp(x));
+        assert(pe[2] == ddp(x));
     }
 }
 
