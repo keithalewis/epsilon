@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bell.h" />
     <ClInclude Include="epsilon.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="hermite.h" />

@@ -1,5 +1,6 @@
 // epsilon.t.cpp - test epsilon
 #include <cassert>
+#include "bell.h"
 #include "hermite.h"
 #include "epsilon.h"
 using namespace fms;
@@ -138,6 +139,28 @@ void test_hermite()
     assert (Hermite(2, x) == x*x - 1);
 }
 
+void test_bell()
+{
+    double a[] = {1, 1, 1, 1, 1};
+    {
+        Bell<double*,double> B(a);
+        assert(B[5] == 52);
+        assert(B[4] == 15);
+        assert(B[3] == 5);
+        assert(B[2] == 2);
+        assert(B[1] == 1);
+        assert(B[0] == 1);
+    }
+    {
+        Bell<double*,double> B(a);
+        assert (B[0] == 1);
+        assert (B[1] == 1);
+        assert (B[2] == 2);
+        assert (B[3] == 5);
+        assert (B[4] == 15);
+    }
+}
+
 int main()
 {
     test_constructor<1, double>();
@@ -165,6 +188,8 @@ int main()
     test_derivative();
 
     test_hermite();
+
+    test_bell();
 
     return 0;
 }
