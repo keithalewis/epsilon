@@ -8,7 +8,7 @@ template<size_t N, class X>
 void test_constructor()
 {
     {
-        epsilon<N,X> e0;
+        epsilon<N,X> e0(X(0));
         for (int i = 0; i < N; ++i) {
             assert(e0[i] == X(i == 1 ? 1 : 0));
         }
@@ -73,6 +73,14 @@ void test_mul()
     for (size_t i = 0; i < N; ++i) {
         assert(e1[i] == X(i == 3 ? 6 : 0));
     }
+}
+template<size_t N, class X = double>
+void test_div()
+{
+    epsilon<N, X> e1(X(1));
+    auto e2 = e1/e1;
+    epsilon<N, X> zero;
+    assert (e2 == 1. + zero);
 }
 
 template<class X>
@@ -148,6 +156,11 @@ int main()
     test_mul<2, double>();
     test_mul<3, double>();
     test_mul<4, double>();
+
+    test_div<1, double>();
+    test_div<2, double>();
+    test_div<3, double>();
+    test_div<4, double>();
 
     test_derivative();
 

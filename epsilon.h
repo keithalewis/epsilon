@@ -9,8 +9,12 @@ namespace fms {
         // a[0], ..., a[N-1] <-> sum_{k < N} a_k epsilon^k/k!
         std::valarray<X> a;
     public:
+        // zero
+        epsilon()
+            : a(X(0), N)
+        { }
         // xI + epsilon
-        epsilon(X x = 0)
+        epsilon(X x)
             : a(X(0), N)
         {
             a[0] = x;
@@ -139,6 +143,9 @@ namespace fms {
 
 } // namespace fms
 
+//
+// Global operators
+//
 template<size_t N, class X = double>
 inline fms::epsilon<N,X> operator+(fms::epsilon<N,X> a, const fms::epsilon<N,X>& b)
 {
@@ -185,4 +192,20 @@ template<size_t N, class X = double>
 inline fms::epsilon<N, X> operator*(const X& a, fms::epsilon<N, X> b)
 {
     return b *= a;
+}
+
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator/(fms::epsilon<N, X> a, const fms::epsilon<N, X>& b)
+{
+    return a /= b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator/(fms::epsilon<N, X> a, const X& b)
+{
+    return a /= b;
+}
+template<size_t N, class X = double>
+inline fms::epsilon<N, X> operator/(const X& a, fms::epsilon<N, X> b)
+{
+    return (a + fms::epsilon<N,X>()) /= b;
 }
