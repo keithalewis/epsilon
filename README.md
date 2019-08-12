@@ -11,7 +11,7 @@ X poly(X x)
     return x*x + 2.*x + 3.;
 }
 ```
-Now you can use `epsilon` ot compute derivatives.
+Now you can use `epsilon` to compute derivatives.
 ```
 double x = 1.23;
 epsilon<3> x_(x);
