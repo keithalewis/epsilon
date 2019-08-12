@@ -6,7 +6,7 @@ The class `epsilon` implements Toeplitz matrices together with standard numerica
 You must define functions that take generic arguments. For example:
 ```
 template<class X>
-X poly(X x)
+X f(X x)
 {
     return x*x + 2.*x + 3.;
 }
