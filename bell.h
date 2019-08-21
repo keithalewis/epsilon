@@ -7,7 +7,7 @@
 
 namespace fms {
 
-    template<class S, class X = std::iterator_traits<S>::value_type>
+    template<class S, class X>
     class Bell {
         S a; // sequence of coefficients
         std::vector<X> B; // memoized Bell values
