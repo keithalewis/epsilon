@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -104,6 +105,7 @@
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -153,7 +155,14 @@
     <ClInclude Include="hermite.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="add.t.cpp" />
+    <ClCompile Include="bell.t.cpp" />
+    <ClCompile Include="constructor.t.cpp" />
+    <ClCompile Include="div.t.cpp" />
     <ClCompile Include="epsilon.t.cpp" />
+    <ClCompile Include="hermite.t.cpp" />
+    <ClCompile Include="mul.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

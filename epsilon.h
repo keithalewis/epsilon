@@ -87,9 +87,9 @@ namespace fms {
         {
             std::valarray<X> c(X(0), N);
 
-            for (int n = 0; n < N; ++n) {
+            for (long n = 0; n < N; ++n) {
                 X Cnk = 1;
-                for (int k = 0; k <= n; ++k) {
+                for (long k = 0; k <= n; ++k) {
                     c[n] += Cnk*a[k]*b.a[n-k];
                     Cnk *= n - k;
                     Cnk /= k + 1;
