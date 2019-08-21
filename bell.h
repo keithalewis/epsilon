@@ -2,11 +2,12 @@
 // B_{n+1}(a_1,...,x_{n+1}) = sum_{k = 0}^n C(n,k) B_{n-k}(a_1,...,a_{n-k}) a_{k+1}
 // eetermined by exp(sum_{n>0} a_n x^n/n!) = sum_{n>=0} B_n(a_1,...,a_n) x^n/n!
 #pragma once
+#include <iterator>
 #include <vector>
 
 namespace fms {
 
-    template<class S, class X>
+    template<class S, class X = std::iterator_traits<S>::value_type>
     class Bell {
         S a; // sequence of coefficients
         std::vector<X> B; // memoized Bell values
