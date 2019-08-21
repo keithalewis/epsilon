@@ -14,8 +14,7 @@ X f(X x)
 Now you can use `epsilon` to compute derivatives.
 ```
 double x = 1.23;
-epsilon<3> x_(x);
-auto y = f(x_);
+auto y = f(epsilon<3>(x));
 assert (y[0] == f(x));
 assert (y[1] == 2*x + 2);
 assert (y[2] == 2);
