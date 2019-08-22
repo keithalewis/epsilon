@@ -25,7 +25,7 @@ namespace fms {
                     X Ckj = 1; // really C(k-1,j)
                     S ak = a;
                     for (size_t j = 0; j < k && ak; ++j) {
-                        Bk += Ckj * operator[](k - 1 - j) * (*ak);
+                        Bk += Ckj * B[k - 1 - j] * (*ak);
                         Ckj *= k - 1 - j;
                         Ckj /= j + 1;
                         ++ak;
