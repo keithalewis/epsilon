@@ -8,7 +8,7 @@ You must define functions that take generic arguments. For example:
 template<class X>
 X f(X x)
 {
-    return x*x + 2.*x + 3.;
+    return x*x + 2*x + 3;
 }
 ```
 Now you can use `epsilon` to compute derivatives.
