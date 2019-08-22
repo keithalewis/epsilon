@@ -158,6 +158,7 @@
     <ClCompile Include="add.t.cpp" />
     <ClCompile Include="bell.t.cpp" />
     <ClCompile Include="constructor.t.cpp" />
+    <ClCompile Include="derivative.t.cpp" />
     <ClCompile Include="div.t.cpp" />
     <ClCompile Include="epsilon.t.cpp" />
     <ClCompile Include="hermite.t.cpp" />
