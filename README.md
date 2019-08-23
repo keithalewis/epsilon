@@ -12,7 +12,8 @@ so the derivative of _x_<sup>2</sup> is 2 _x_. No need to take limits of differe
 quotients.
 
 Of course ε cannot be a real number, but the 2 x 2 matrix ε = [0 1; 0 0] satisfies these conditions.
-The class `epsilon` implements Toeplitz matrices together with standard numerical operations on them.
+This is a special case of a Toeplitz matrix. The class `epsilon` implements all the necessary 
+arithmetic required to compute derivatives to any order.
 
 In order to use this library you must define functions that take generic arguments. For example:
 ```
