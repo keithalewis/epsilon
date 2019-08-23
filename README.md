@@ -8,7 +8,7 @@ _f_(_x_ + ε) = _f_(_x_) + _f_'(_x_) ε + _f_''(_x_) ε<sup>2</sup>/2 +  =  _f_(
 The coefficient of ε is the derivative of _f_.
 
 For example, if _f_(_x_) = _x_<sup>2</sup> 
-then (_x_ + ε)<sup>2</sup> = _x_<sup>2 + 2_x_ε + ε<sup>2</sup> = _x_<sup>2</sup> + 2_x_ε,
+then (_x_ + ε)<sup>2</sup> = _x_<sup>2</sup> + 2_x_ε + ε<sup>2</sup> = _x_<sup>2</sup> + 2_x_ε,
 so the derivative of _x_<sup>2</sup> is 2_x_. No need to take limits of difference
 quotients.
 
