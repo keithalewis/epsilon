@@ -3,11 +3,11 @@
 This library can be used to compute derivatives of arbitrary order to machine precision.
 
 If ε is not 0 and ε<sup>2</sup> = 0 then for any sufficiently differentiable function _f_,
-_f_(_x_ + ε) = _f_(_x_) + _f_'(_x_) ε + _f_''(_x_) ε<sup>2</sup>/2 +  =  _f_(_x_) + _f_'(_x_) ε.
+_f_(_x_ + ε) = _f_(_x_) + _f_'(_x_) ε + _f_''(_x_) ε<sup>2</sup>/2 + &middot; &middot; &middot; =  _f_(_x_) + _f_'(_x_) ε.
 The coefficient of ε is the derivative of _f_.
 
 For example, if _f_(_x_) = _x_<sup>2</sup> 
-then (_x_ + ε)<sup>2</sup> = _x_<sup>2</sup> + 2_x_ε + ε<sup>2</sup> + &middot; &middot; &middot; ... = _x_<sup>2</sup> + 2 _x_ ε,
+then (_x_ + ε)<sup>2</sup> = _x_<sup>2</sup> + 2_x_ε + ε<sup>2</sup> = _x_<sup>2</sup> + 2 _x_ ε,
 so the derivative of _x_<sup>2</sup> is 2 _x_. No need to take limits of difference
 quotients.
 
