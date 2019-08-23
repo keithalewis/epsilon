@@ -3,8 +3,8 @@
 This library can be used to compute derivatives of arbitrary order to machine precision.
 The class `epsilon` implements Toeplitz matrices together with standard numerical operations on them.
 
-If ε is not 0 and ε<sup>2</sup> = 0 then for any twice differentiable function f,
-f(x + ε) = f(x) + f'(x) ε + 1/2 f''(x) ε<sup>2</sup>.
+If ε is not 0 and ε<sup>2</sup> = 0 then for any sufficiently differentiable function _f_,
+_f_(_x_ + ε) = _f_(_x_) + _f_'(_x_) ε + _f_''(_x_) ε<sup>2</sup>/2 +  =  _f_(_x_) + _f_'(_x_) ε.
 
 You must define functions that take generic arguments. For example:
 ```
