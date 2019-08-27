@@ -3,11 +3,12 @@
 #include <type_traits>
 #include <valarray>
 
-#define IS_ARITHMETIC(X) , class = typename std::enable_if<std::is_arithmetic<X>::value>::type
+template<class X>
+using IsArithmetic = typename std::enable_if<std::is_arithmetic<X>::value>::type;
 
 namespace fms {
 
-    template<size_t N, class X = double IS_ARITHMETIC(X)>
+    template<size_t N, class X = double, class = IsArithmetic<X>>
     class epsilon {
         // a[0], ..., a[N-1] <-> sum_{k < N} a_k epsilon^k/k!
         std::valarray<X> a;
@@ -42,11 +43,6 @@ namespace fms {
         // bool operator< ...
 
         // underlying raw valarray
-        const std::valarray<X>& array() const
-        {
-            return a;
-        }
-        // n-th derivative
         const X& operator[](size_t n) const
         {
             return a[n];
@@ -154,12 +150,12 @@ inline fms::epsilon<N,X> operator+(fms::epsilon<N,X> a, const fms::epsilon<N,X>&
 {
     return a += b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator+(fms::epsilon<N, X> a, const Y& b)
 {
     return a += b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator+(const Y& a, fms::epsilon<N, X> b)
 {
     return b += a;
@@ -170,12 +166,12 @@ inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> a, const fms::epsilon<N, 
 {
     return a -= b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> a, const Y& b)
 {
     return a -= b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator-(const Y& a, fms::epsilon<N, X> b)
 {
     return -(b -= a);
@@ -186,12 +182,12 @@ inline fms::epsilon<N, X> operator*(fms::epsilon<N, X> a, const fms::epsilon<N, 
 {
     return a *= b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator*(fms::epsilon<N, X> a, const Y& b)
 {
     return a *= b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator*(const Y& a, fms::epsilon<N, X> b)
 {
     return b *= a;
@@ -202,15 +198,13 @@ inline fms::epsilon<N, X> operator/(fms::epsilon<N, X> a, const fms::epsilon<N, 
 {
     return a /= b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator/(fms::epsilon<N, X> a, const Y& b)
 {
     return a /= b;
 }
-template<size_t N, class X, class Y IS_ARITHMETIC(Y)>
+template<size_t N, class X, class Y, class = IsArithmetic<Y>>
 inline fms::epsilon<N, X> operator/(const Y& a, fms::epsilon<N, X> b)
 {
     return (a + fms::epsilon<N,X>()) /= b;
 }
-
-#undef IS_ARITHMETIC
