@@ -43,11 +43,6 @@ namespace fms {
         // bool operator< ...
 
         // underlying raw valarray
-        const std::valarray<X>& array() const
-        {
-            return a;
-        }
-        // n-th derivative
         const X& operator[](size_t n) const
         {
             return a[n];
