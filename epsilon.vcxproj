@@ -153,6 +153,7 @@
     <ClInclude Include="epsilon.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="hermite.h" />
+    <ClInclude Include="pow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="add.t.cpp" />
