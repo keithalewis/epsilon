@@ -161,6 +161,7 @@
     <ClCompile Include="derivative.t.cpp" />
     <ClCompile Include="div.t.cpp" />
     <ClCompile Include="epsilon.t.cpp" />
+    <ClCompile Include="exp.t.cpp" />
     <ClCompile Include="expression.t.cpp" />
     <ClCompile Include="hermite.t.cpp" />
     <ClCompile Include="mul.t.cpp" />
