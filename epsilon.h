@@ -17,13 +17,19 @@ namespace fms {
         epsilon()
             : a(X(0), N)
         { }
-        // xI + epsilon
-        epsilon(X x)
+		// x I
+		epsilon(const X& x)
+			: a(X(0), N)
+		{
+			a[0] = x;
+		}
+        // x0 I + x1 epsilon
+        epsilon(const X& x0, [[maybe_unused]] const X& x1)
             : a(X(0), N)
         {
-            a[0] = x;
+            a[0] = x0;
             if constexpr (N > 1)
-                a[1] = 1;
+                a[1] = x1;
         }
         epsilon(const X* px)
             : a(px, N)
@@ -32,6 +38,16 @@ namespace fms {
             : a{il}
         { }
 
+		/*
+		// x I
+		epsilon& operator=(const X& x)
+		{
+			a = X(0);
+			a[0] = x;
+
+			return *this;
+		}
+		*/
         bool operator==(const epsilon& b) const
         {
             return (a == b.a).min() == true;
@@ -138,6 +154,11 @@ namespace fms {
             return *this;
         }
 
+		X norm(X p = 1) const
+		{
+			return std::pow(pow(abs(a), p).sum(), X(1)/p);
+		}
+
     };
 
 } // namespace fms
@@ -145,6 +166,17 @@ namespace fms {
 //
 // Global operators
 //
+template<size_t N, class X, class = IsArithmetic<X>>
+inline X fabs(const fms::epsilon<N,X>& a)
+{
+	return a.norm(X(1));
+}
+template<size_t N, class X, class = IsArithmetic<X>>
+inline X norm(const fms::epsilon<N, X>& a, const X& p = 1)
+{
+	return a.norm(p);
+}
+
 template<size_t N, class X>
 inline fms::epsilon<N,X> operator+(fms::epsilon<N,X> a, const fms::epsilon<N,X>& b)
 {

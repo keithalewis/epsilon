@@ -6,7 +6,7 @@ using namespace fms;
 template<size_t N, class X = double>
 int test_mul()
 {
-    epsilon<N, X> e0(X(0));
+    epsilon<N, X> e0(0, 1);
     auto e1 = e0;
     e1 *= e0;
     for (size_t i = 0; i < N; ++i) {

@@ -9,7 +9,7 @@ auto test_expression()
 {
     X x = 0;
     Y y = 1;
-    epsilon<2, Z> z(3);
+    epsilon<2, Z> z(3, 1);
 
     return x + y * z - z/z;
 }

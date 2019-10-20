@@ -32,7 +32,7 @@ int test_derivative()
 
     }
     {
-        epsilon<5, double> e(0.);
+        epsilon<5, double> e(0, 1);
         auto e1 = e;
         e1 *= e; assert(e1 == epsilon<5>({ 0, 0, 2, 0, 0 }));
         e1 *= e; assert(e1 == epsilon<5>({ 0, 0, 0, 6, 0 }));
@@ -41,7 +41,7 @@ int test_derivative()
     }
     {
         double x = 1;
-        epsilon<3, double> e(x);
+        epsilon<3, double> e(x, 1);
         auto pe = p(e);
         assert(pe[0] == p(x));
         assert(pe[1] == dp(x));

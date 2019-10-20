@@ -7,7 +7,7 @@ template<size_t N, class X>
 int test_constructor()
 {
     {
-        epsilon<N, X> e0(X(0));
+        epsilon<N, X> e0(0, 1);
         for (int i = 0; i < N; ++i) {
             assert(e0[i] == X(i == 1 ? 1 : 0));
         }

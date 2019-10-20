@@ -6,7 +6,7 @@ using namespace fms;
 template<size_t N, class X = double>
 int test_div()
 {
-    epsilon<N, X> e1(X(1));
+    epsilon<N, X> e1(X(1), 1);
     auto e2 = e1 / e1;
     epsilon<N, X> zero;
     assert(e2 == 1. + zero);
