@@ -1,6 +1,6 @@
 ﻿# epsilon
 
-This library can be used to compute derivatives of arbitrary order to machine precision.
+This library can be used to compute derivatives of any order to machine precision.
 
 If ε is not 0 and ε<sup>2</sup> = 0 then for any sufficiently differentiable function _f_,
 _f_(_x_ + ε) = _f_(_x_) + _f_'(_x_) ε + _f_''(_x_) ε<sup>2</sup>/2 + &middot; &middot; &middot; =  _f_(_x_) + _f_'(_x_) ε.
