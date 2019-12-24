@@ -30,6 +30,9 @@
     <ClInclude Include="pow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TriangularMatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epsilon.t.cpp">
@@ -66,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="norm.t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="matrixtest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

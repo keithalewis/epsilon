@@ -154,6 +154,7 @@
     <ClInclude Include="exp.h" />
     <ClInclude Include="hermite.h" />
     <ClInclude Include="pow.h" />
+    <ClInclude Include="TriangularMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="add.t.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="hermite.t.cpp" />
     <ClCompile Include="mul.t.cpp" />
     <ClCompile Include="norm.t.cpp" />
+    <ClCompile Include="matrixtest.cpp" />
     <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
   <ItemGroup>
