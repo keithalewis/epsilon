@@ -83,6 +83,29 @@ int test() {
 
 	//test ==
 	assert(c == c);
+
+	//test outer
+	//  0 1   1 0
+	//a=0 0 b=0 1
+	a = TriangularMatrix(2);
+	a(0, 1) = 1;
+	b = TriangularMatrix(2);
+	b += 1;
+	//  	  0 0 1 0
+	//		  0 0 0 1
+	//		  0 0 0 0
+	//c=a ¡Á b=0 0 0 0 
+	c = a.outer(b);
+	assert(c.Size == 4);
+	assert(c(0, 2) == 1);
+	assert(c(1 , 3) == 1);
+	//  	  0 1 0 0
+	//		  0 0 0 0
+	//		  0 0 0 1
+	//c=b ¡Á a=0 0 0 0 
+	c = b.outer(a);
+	assert(c(0, 1) == 1);
+	assert(c(2, 3) == 1);
 	cout << "Test suceessfully ends."<<endl;
 	return 0;
 }

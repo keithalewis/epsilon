@@ -199,7 +199,18 @@ namespace fms {
 		//direct product
 		TriangularMatrix outer(const TriangularMatrix & rhs) const{
 			TriangularMatrix result(this->Size * rhs.Size);
-
+			for (size_t i = 0; i < Size; i++) {
+				for (size_t j = i; j < Size; j++) {
+					for (size_t r_i=0; r_i < rhs.Size; r_i++) {
+						for (size_t r_j=r_i; r_j < rhs.Size; r_j++) {
+							if (i * rhs.Size + r_i <= j * rhs.Size + r_j) {
+								result.operator()(i * rhs.Size + r_i, j * rhs.Size + r_j) = operator()(i, j) * rhs(r_i, r_j);
+							}
+						}
+					}
+				}
+			}
+			return result;
 		}
 	private:
 		double* m_lpBuf; // pointer to data
