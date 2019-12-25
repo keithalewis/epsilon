@@ -113,9 +113,43 @@ namespace fms {
 				m_lpBuf[i] *= rhs;
 			return *this;
 		}
+		//matrix division
+		TriangularMatrix& operator /= (const TriangularMatrix& rhs)
+		{
+			//if (!rhs.m_lpBuf) return *this;
+			assert(rhs.Size == this->Size);
+			TriangularMatrix rhs_inv = rhs.inverse();
+			double* temp = new double[this->Size];
+			for (size_t i = 0; i < Size; i++) {
+				std::memset(temp, 0, sizeof(double) * this->Size);
+				for (size_t j = i; j < Size; j++) {
+					double t = 0;
+					for (size_t k = i; k <= j; k++)
+						t += operator()(i, k) * rhs_inv(k, j);
+					temp[j] = t;
+				}
+				for (size_t j = i; j < this->Size; j++)
+					operator()(i, j) = temp[j];
+			}
+			delete[] temp;
+			return *this;
+		}
+		//this/rhs
+		TriangularMatrix& operator /= (const double& rhs)
+		{
+			for (int i = 0; i < (Size + 1) * Size / 2; i++)
+				m_lpBuf[i] /= rhs;
+			return *this;
+		}
+		//-1*this
+		TriangularMatrix& operator -()
+		{
+			operator*=(-1);
+			return *this;
+		}
 		//inverse(this)
 		//Gauss reduction method
-		TriangularMatrix inverse() {
+		TriangularMatrix inverse() const {
 			TriangularMatrix identity(Size);
 			if (!Size) return *this;
 			identity += 1;
@@ -176,4 +210,16 @@ inline fms::TriangularMatrix operator * (fms::TriangularMatrix A, const double& 
 inline fms::TriangularMatrix operator * (const double& B, fms::TriangularMatrix A)
 {
 	return A *= B;
+}
+inline fms::TriangularMatrix operator / (fms::TriangularMatrix A, const fms::TriangularMatrix& B)
+{
+	return A /= B;
+}
+inline fms::TriangularMatrix operator / (fms::TriangularMatrix A, const double& B)
+{
+	return A /= B;
+}
+inline fms::TriangularMatrix operator / (const double& B, fms::TriangularMatrix A)
+{
+	return A /= B;
 }

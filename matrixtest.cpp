@@ -5,11 +5,38 @@ using fms::TriangularMatrix;
 using std::cout;
 using std::endl;
 int test() {
+	//test + number
 	TriangularMatrix a(2);
 	a += 1;
 	assert(a(0, 0) == 1);
 	assert(a(0, 1) == 0);
 	assert(a(1, 1) == 1);
+
+	//test + matrix
+	a += a;
+	assert(a(0, 0) == 2);
+	assert(a(0, 1) == 0);
+	assert(a(1, 1) == 2);
+	
+	//test / number
+	a /= 2;
+	assert(a(0, 0) == 1);
+	assert(a(0, 1) == 0);
+	assert(a(1, 1) == 1);
+
+	//test - matrix
+	a = 2 * a - a;
+	assert(a(0, 0) == 1);
+	assert(a(0, 1) == 0);
+	assert(a(1, 1) == 1);
+
+	//test - number
+	a = 2 * a - 1;
+	assert(a(0, 0) == 1);
+	assert(a(0, 1) == 0);
+	assert(a(1, 1) == 1);
+
+	//test inverse
 	TriangularMatrix b(4);
 	int t = 0;
 	for (int i = 0; i < 4; i++)
@@ -29,6 +56,8 @@ int test() {
 	assert(fabs(b(2, 3)+.1125)<.0001);
 	assert(fabs(b(3, 3)-.1)<.0001);
 	b = b.inverse();
+
+	//test = and * matrix
 	a = b * b;
 	assert(a(0, 0) == 1.0);
 	assert(a(0, 1) == 12);
@@ -40,10 +69,13 @@ int test() {
 	assert(a(2, 2) == 64);
 	assert(a(2, 3) == 162);
 	assert(a(3, 3) == 100);
+
+	//test / matrix
+	TriangularMatrix c = a / b;
+	t = 0;
 	for (int i = 0; i < 4; i++) {
 		for (int j = i; j < 4; j++)
-			cout << a(i, j) << ' ';
-		cout << endl;
+			assert(fabs(c(i, j) - ++t)<0.001);
 	}
 	cout << "Test suceessfully ends.";
 	return 0;
