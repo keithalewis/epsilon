@@ -119,17 +119,19 @@ namespace fms {
 			if (!Size) return *this;
 			identity += 1;
 			for (size_t i = Size - 1; i >= 0 && i<=Size-1; i--) {//consider the ith row
-				for (size_t j = i; j < Size && j<=i; j++)
+				for (size_t j = i; j < Size; j++)
 					identity(i, j) /= operator()(i, i);
 				operator()(i, i) = 1;
 				if (i == 0) continue;
 				for (size_t j = i - 1; j >= 0 && j<=i-1; j--) {
-					for (size_t k = i; k < Size && k<=i; k++)
+					for (size_t k = i; k < Size; k++)
 						identity(j, k) -= operator()(j, i) * identity(i, k);
 					operator()(j, i) = 0;
 					std::cout << j << ' ' << i << std::endl;
 				}
 			}
+			for (size_t i = 0; i < (Size + 1) * Size / 2; i++)
+				this->m_lpBuf[i] = identity.m_lpBuf[i];
 			return *this;
 		}
 
