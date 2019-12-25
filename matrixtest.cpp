@@ -43,7 +43,7 @@ int test() {
 		for (int j = i; j < 4; j++)
 		{
 			b(i, j) = ++t;
-		}	
+		}
 	b = b.inverse();
 	assert(b(0, 0) == 1.0);
 	assert(fabs(b(0, 1)+.4)<.0001);
@@ -77,7 +77,13 @@ int test() {
 		for (int j = i; j < 4; j++)
 			assert(fabs(c(i, j) - ++t)<0.001);
 	}
-	cout << "Test suceessfully ends.";
+
+	//test !=
+	assert(c != b);
+
+	//test ==
+	assert(c == c);
+	cout << "Test suceessfully ends."<<endl;
 	return 0;
 }
 

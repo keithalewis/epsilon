@@ -27,6 +27,14 @@ namespace fms {
 			this->m_lpBuf = rhs.m_lpBuf;
 			rhs.m_lpBuf = NULL;
 		};
+
+		~TriangularMatrix() {
+			Size = 0;
+			delete[] this->m_lpBuf;
+			this->m_lpBuf = NULL;
+		};
+
+
 		TriangularMatrix& operator=(const TriangularMatrix& rhs) {
 			this->Size = rhs.Size;
 			delete[] this->m_lpBuf;
@@ -35,6 +43,7 @@ namespace fms {
 				this->m_lpBuf[i] = rhs.m_lpBuf[i];
 			return *this;
 		};
+
 		TriangularMatrix& operator=(TriangularMatrix&& rhs) noexcept {
 			this->Size = rhs.Size;
 			delete[] this->m_lpBuf;
@@ -42,11 +51,7 @@ namespace fms {
 			rhs.m_lpBuf = NULL;
 			return *this;
 		};
-		~TriangularMatrix() {
-			Size = 0;
-			delete[] this->m_lpBuf;
-			this->m_lpBuf = NULL;
-		};
+		
 		double& operator ()(size_t i, size_t j) const
 		{
 			assert(i < Size);
@@ -54,6 +59,19 @@ namespace fms {
 			//if (i > j) return 0;//visiting lower triangle element
 			return *(m_lpBuf + Size * i - i * (i - 1) / 2 + j - i);
 		}
+
+		bool operator == (const TriangularMatrix& rhs) const{
+			if (this->Size != rhs.Size) return false;
+			for (size_t i = 0; i < Size; i++)
+				if (this->m_lpBuf[i] != rhs.m_lpBuf[i])
+					return false;
+			return true;			
+		}
+
+		bool operator !=(const TriangularMatrix& rhs) const {
+			return !operator==(rhs);
+		}
+
 		TriangularMatrix& operator += (const TriangularMatrix& rhs)
 		{
 			if (!rhs.m_lpBuf) return *this;
@@ -63,6 +81,7 @@ namespace fms {
 
 			return *this;
 		}
+
 		//this+rhs*I
 		TriangularMatrix& operator += (const double& rhs)
 		{
@@ -70,6 +89,7 @@ namespace fms {
 				operator()(i, i) += rhs;
 			return *this;
 		}
+
 		TriangularMatrix& operator -= (const TriangularMatrix& rhs)
 		{
 			if (!rhs.m_lpBuf) return *this;
@@ -79,6 +99,7 @@ namespace fms {
 
 			return *this;
 		}
+
 		//this-rhs*I
 		TriangularMatrix& operator -= (const double& rhs)
 		{
@@ -86,6 +107,7 @@ namespace fms {
 				operator()(i, i) -= rhs;
 			return *this;
 		}
+
 		//matrix multiplication
 		TriangularMatrix& operator *= (const TriangularMatrix& rhs)
 		{
@@ -106,6 +128,7 @@ namespace fms {
 			delete[] temp;
 			return *this;
 		}
+
 		//this*rhs
 		TriangularMatrix& operator *= (const double& rhs)
 		{
@@ -113,6 +136,7 @@ namespace fms {
 				m_lpBuf[i] *= rhs;
 			return *this;
 		}
+
 		//matrix division
 		TriangularMatrix& operator /= (const TriangularMatrix& rhs)
 		{
@@ -134,6 +158,7 @@ namespace fms {
 			delete[] temp;
 			return *this;
 		}
+
 		//this/rhs
 		TriangularMatrix& operator /= (const double& rhs)
 		{
@@ -141,12 +166,14 @@ namespace fms {
 				m_lpBuf[i] /= rhs;
 			return *this;
 		}
+
 		//-1*this
 		TriangularMatrix& operator -()
 		{
 			operator*=(-1);
 			return *this;
 		}
+
 		//inverse(this)
 		//Gauss reduction method
 		TriangularMatrix inverse() const {
@@ -169,6 +196,11 @@ namespace fms {
 			return identity;
 		}
 
+		//direct product
+		TriangularMatrix outer(const TriangularMatrix & rhs) const{
+			TriangularMatrix result(this->Size * rhs.Size);
+
+		}
 	private:
 		double* m_lpBuf; // pointer to data
 	};
