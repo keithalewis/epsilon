@@ -191,7 +191,7 @@ X d2q_dx_dz(X x, X y,X z) {
 }
 
 template<class X>
-X d2q_dx_dy_dz(X x, X y, X z) {
+X d3q_dx_dy_dz(X x, X y, X z) {
 	return 0;
 }
 
@@ -225,7 +225,7 @@ int test3() {
 	assert(dq(0, index) == d2q_dx_dz(x, y, z));
 	//test d^3q/dxdydz|(x=1.0,y=2.0,z=3.0)
 	index = fms::TriangularMatrix::rep({ 1,1,1 }, 1);
-	assert(dq(0, index) == d2q_dx_dy_dz(x, y, z));
+	assert(dq(0, index) == d3q_dx_dy_dz(x, y, z));
 	cout << "Test suceessfully ends." << endl;
 	return 0;
 }
