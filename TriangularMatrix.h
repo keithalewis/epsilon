@@ -2,6 +2,9 @@
 #include <cstring>
 #include <cassert>
 #include <iostream>
+#include <vector>
+using std::cout;
+using std::endl;
 namespace fms {
 	class TriangularMatrix {
 	public:
@@ -11,27 +14,28 @@ namespace fms {
 		// 0   0  a_7 a_8
 		// 0   0   0  a_9
 		//matrix element in memory, 1D array
-		TriangularMatrix(size_t m = 0) {
+		TriangularMatrix(size_t m = 0) {			
 			Size = m;
 			this->m_lpBuf = new double[(m + 1) * m / 2];
 			std::memset(m_lpBuf, 0, (m + 1) * m / 2 * sizeof(double));
 		};
-		TriangularMatrix(const TriangularMatrix& rhs) {
+		TriangularMatrix(const TriangularMatrix& rhs) {			
 			this->Size = rhs.Size;
 			this->m_lpBuf = new double[(Size + 1) * Size / 2];
 			for (int i = 0; i < (Size * (Size + 1) / 2); ++i)
 				this->m_lpBuf[i] = rhs.m_lpBuf[i];
 		};
-		TriangularMatrix(TriangularMatrix&& rhs) noexcept {
+		
+		TriangularMatrix(TriangularMatrix&& rhs) noexcept {			
 			this->Size = rhs.Size;
 			this->m_lpBuf = rhs.m_lpBuf;
-			rhs.m_lpBuf = NULL;
+			rhs.m_lpBuf = nullptr;
 		};
 
 		~TriangularMatrix() {
 			Size = 0;
 			delete[] this->m_lpBuf;
-			this->m_lpBuf = NULL;
+			this->m_lpBuf = nullptr;
 		};
 
 
@@ -44,17 +48,19 @@ namespace fms {
 			return *this;
 		};
 
+		
 		TriangularMatrix& operator=(TriangularMatrix&& rhs) noexcept {
 			this->Size = rhs.Size;
-			delete[] this->m_lpBuf;
+			delete [] this->m_lpBuf;
 			this->m_lpBuf = rhs.m_lpBuf;
-			rhs.m_lpBuf = NULL;
+			rhs.m_lpBuf = nullptr;
 			return *this;
 		};
 		
 		double& operator ()(size_t i, size_t j) const
 		{
 			assert(i < Size);
+			assert(j < Size);
 			assert(j >= i);
 			//if (i > j) return 0;//visiting lower triangle element
 			return *(m_lpBuf + Size * i - i * (i - 1) / 2 + j - i);
@@ -211,6 +217,53 @@ namespace fms {
 				}
 			}
 			return result;
+		}
+
+		//static method simple epsilon
+		//for order Nth derivative
+		static TriangularMatrix simple_epsilon(size_t N) {
+			TriangularMatrix result(N);
+			for (size_t i = 0; i+1 < N; i++)
+				result(i, i + 1) = 1;
+			return result;
+		}
+
+		//static method identity
+		//N th order derivative
+		static TriangularMatrix identity(size_t N) {
+			TriangularMatrix result(N);
+			result += 1;
+			return result;
+		}
+
+		//static method multi_epsilon
+		//M variable
+		//N th order derivative
+		static std::vector<TriangularMatrix> multi_epsilon(size_t M, size_t N) {
+			std::vector<TriangularMatrix> result;
+			for (size_t i = 0; i < M; i++) {
+				TriangularMatrix t = identity(i*(N+1));
+				if (i != 0)
+					t = t.outer(simple_epsilon(N + 1));
+				else
+					t = simple_epsilon(N + 1);
+				if (i!=M-1)
+					result.emplace_back(t.outer(identity((M - i - 1)*(N+1))));
+				else
+					result.emplace_back(t);
+			}
+			return result;
+		}
+		//static method coefficient
+
+		//print current matrix
+		void print() {
+			for (size_t i = 0; i < Size; i++) {
+				for (size_t j = 0; j < Size; j++)
+					if (j < i) std::cout << 0 << ' ';
+					else std::cout << operator()(i, j) << ' ';
+				std::cout << std::endl;
+			}
 		}
 	private:
 		double* m_lpBuf; // pointer to data

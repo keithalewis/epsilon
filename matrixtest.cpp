@@ -106,6 +106,12 @@ int test() {
 	c = b.outer(a);
 	assert(c(0, 1) == 1);
 	assert(c(2, 3) == 1);
+
+	//test multi_epsilon
+	std::vector<TriangularMatrix>epsilon_list = TriangularMatrix::multi_epsilon(3, 1);
+	for (int i = 0; i < epsilon_list.size(); i++) {
+		epsilon_list[i].print();
+	}
 	cout << "Test suceessfully ends."<<endl;
 	return 0;
 }
