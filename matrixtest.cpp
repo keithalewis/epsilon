@@ -112,7 +112,7 @@ int test() {
 	for (int i = 0; i < epsilon_list.size(); i++) {
 		epsilon_list[i].print();
 	}
-	cout << "Test suceessfully ends."<<endl;
+	
 	return 0;
 }
 
@@ -132,7 +132,7 @@ X dpp_dy(X x, X y) {
 }
 
 template<class X>
-X d2pp_dy_dx(X x, X y) {
+X d2pp_dx_dy(X x, X y) {
 	return -1.0 / (y * y);
 }
 
@@ -156,53 +156,80 @@ int test2() {
 	assert(dpp(0, index) == dpp_dy(x,y));
 	//test d^2pp/dxdy|(x=1.0,y=2.0)
 	index = fms::TriangularMatrix::rep({ 1,1 }, 1);
-	assert(dpp(0, index) == d2pp_dy_dx(x,y));
+	assert(dpp(0, index) == d2pp_dx_dy(x,y));
 	return 0;
 }
 
 template<class X>
 X q(X x, X y, X z) {
-	return x / y;
+	return (x*x+y*y)/z;
 }
 
 template<class X>
-X dq_dx(X x, X y) {
-	return 1.0 / y;
+X dq_dx(X x, X y, X z) {
+	return (2*x)/z;
 }
 
 template<class X>
-X dq_dy(X x, X y) {
-	return -x / (y * y);
+X dq_dy(X x, X y, X z) {
+	return (2*y)/z;
 }
 
 template<class X>
-X d2q_dy_dx(X x, X y) {
-	return -1.0 / (y * y);
+X dq_dz(X x, X y, X z) {
+	return -(x * x + y * y) / (z*z);
+}
+
+template<class X>
+X d2q_dx_dy(X x, X y,X z) {
+	return 0;
+}
+
+template<class X>
+X d2q_dx_dz(X x, X y,X z) {
+	return -(2 * x) / (z*z);
+}
+
+template<class X>
+X d2q_dx_dy_dz(X x, X y, X z) {
+	return 0;
 }
 
 int test3() {
-	size_t index = fms::TriangularMatrix::rep(std::vector<size_t>({ 1,1 }), 1);
-	assert(index == 3);
+	size_t index;
 	double x = 1.0;
 	double y = 2.0;
-	auto epsilon = multi_epsilon({ x,y }, 1);
+	double z = 3.0;
+	auto epsilon = multi_epsilon({ x,y,z }, 1);
 	auto e_x = epsilon[0];
 	auto e_y = epsilon[1];
-	auto dpp = pp(e_x, e_y);
-	//test pp|(x=1.0,y=2.0)
-	index = fms::TriangularMatrix::rep({ 0,0 }, 1);
-	assert(dpp(0, index) == pp(x, y));
-	//test dpp/dx|(x=1.0,y=2.0)
-	index = fms::TriangularMatrix::rep({ 1,0 }, 1);
-	assert(dpp(0, index) == dpp_dx(x, y));
-	//test dpp/dy|(x=1.0,y=2.0)
-	index = fms::TriangularMatrix::rep({ 0,1 }, 1);
-	assert(dpp(0, index) == dpp_dy(x, y));
-	//test d^2pp/dxdy|(x=1.0,y=2.0)
-	index = fms::TriangularMatrix::rep({ 1,1 }, 1);
-	assert(dpp(0, index) == d2pp_dy_dx(x, y));
+	auto e_z = epsilon[2];
+	auto dq = q(e_x, e_y,e_z);
+	//test q|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 0,0,0 }, 1);
+	assert(fabs(dq(0, index) - q(x, y,z))<.001);
+	//test dq/dx|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 1,0,0 }, 1);
+	assert(dq(0, index) == dq_dx(x, y,z));
+	//test dq/dy|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 0,1,0 }, 1);
+	assert(dq(0, index) == dq_dy(x, y,z));
+	//test dq/dz|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 0,0,1 }, 1);
+	assert(dq(0, index) == dq_dz(x, y, z));
+	//test d^2q/dxdy|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 1,1,0 }, 1);
+	assert(dq(0, index) == d2q_dx_dy(x, y,z));
+	//test d^2q/dxdz|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 1,0,1 }, 1);
+	assert(dq(0, index) == d2q_dx_dz(x, y, z));
+	//test d^3q/dxdydz|(x=1.0,y=2.0,z=3.0)
+	index = fms::TriangularMatrix::rep({ 1,1,1 }, 1);
+	assert(dq(0, index) == d2q_dx_dy_dz(x, y, z));
+	cout << "Test suceessfully ends." << endl;
 	return 0;
 }
 
 static int a = test();
 static int b = test2();
+static int c = test3();
