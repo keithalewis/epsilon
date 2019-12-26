@@ -116,4 +116,93 @@ int test() {
 	return 0;
 }
 
-int a = test();
+template<class X>
+X pp(X x, X y) {
+	return x / y;
+}
+
+template<class X>
+X dpp_dx(X x, X y) {
+	return 1.0 / y;
+}
+
+template<class X>
+X dpp_dy(X x, X y) {
+	return -x / (y*y);
+}
+
+template<class X>
+X d2pp_dy_dx(X x, X y) {
+	return -1.0 / (y * y);
+}
+
+int test2() {
+	size_t index = fms::TriangularMatrix::rep(std::vector<size_t>({1,1 }),1);
+	assert(index == 3);
+	double x = 1.0;
+	double y = 2.0;
+	auto epsilon = multi_epsilon({ x,y }, 1);
+	auto e_x = epsilon[0];
+	auto e_y = epsilon[1];
+	auto dpp=pp(e_x, e_y);
+	//test pp|(x=1.0,y=2.0)
+	index =fms::TriangularMatrix::rep({0,0 }, 1);
+	assert(dpp(0, index) == pp(x,y));
+	//test dpp/dx|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 1,0 }, 1);
+	assert(dpp(0, index) == dpp_dx(x,y));
+	//test dpp/dy|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 0,1 }, 1);
+	assert(dpp(0, index) == dpp_dy(x,y));
+	//test d^2pp/dxdy|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 1,1 }, 1);
+	assert(dpp(0, index) == d2pp_dy_dx(x,y));
+	return 0;
+}
+
+template<class X>
+X q(X x, X y, X z) {
+	return x / y;
+}
+
+template<class X>
+X dq_dx(X x, X y) {
+	return 1.0 / y;
+}
+
+template<class X>
+X dq_dy(X x, X y) {
+	return -x / (y * y);
+}
+
+template<class X>
+X d2q_dy_dx(X x, X y) {
+	return -1.0 / (y * y);
+}
+
+int test3() {
+	size_t index = fms::TriangularMatrix::rep(std::vector<size_t>({ 1,1 }), 1);
+	assert(index == 3);
+	double x = 1.0;
+	double y = 2.0;
+	auto epsilon = multi_epsilon({ x,y }, 1);
+	auto e_x = epsilon[0];
+	auto e_y = epsilon[1];
+	auto dpp = pp(e_x, e_y);
+	//test pp|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 0,0 }, 1);
+	assert(dpp(0, index) == pp(x, y));
+	//test dpp/dx|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 1,0 }, 1);
+	assert(dpp(0, index) == dpp_dx(x, y));
+	//test dpp/dy|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 0,1 }, 1);
+	assert(dpp(0, index) == dpp_dy(x, y));
+	//test d^2pp/dxdy|(x=1.0,y=2.0)
+	index = fms::TriangularMatrix::rep({ 1,1 }, 1);
+	assert(dpp(0, index) == d2pp_dy_dx(x, y));
+	return 0;
+}
+
+static int a = test();
+static int b = test2();

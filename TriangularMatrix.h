@@ -3,6 +3,8 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+#include <numeric>
+#include <algorithm>
 using std::cout;
 using std::endl;
 namespace fms {
@@ -220,18 +222,26 @@ namespace fms {
 		}
 
 		//static method simple epsilon
-		//for order Nth derivative
-		static TriangularMatrix simple_epsilon(size_t N) {
-			TriangularMatrix result(N);
-			for (size_t i = 0; i+1 < N; i++)
-				result(i, i + 1) = 1;
+		//for order (n-1) th derivative
+		//dimension of matrix=n
+		// 0 1 0
+		// 0 0 1
+		// 0 0 0 e.g. n=3, pow=1
+		// 0 0 1
+		// 0 0 0
+		// 0 0 0 e.g. n=3, pow=2
+		static TriangularMatrix simple_epsilon(size_t n, size_t pow=1) {
+			TriangularMatrix result(n);
+			for (size_t i = 0; i+pow < n; i++)
+				result(i, i + pow) = 1;
 			return result;
 		}
 
 		//static method identity
-		//N th order derivative
-		static TriangularMatrix identity(size_t N) {
-			TriangularMatrix result(N);
+		//(n-1) th order derivative
+		//dimension of matrix=n
+		static TriangularMatrix identity(size_t n) {
+			TriangularMatrix result(n);
 			result += 1;
 			return result;
 		}
@@ -254,7 +264,30 @@ namespace fms {
 			}
 			return result;
 		}
-		//static method coefficient
+
+
+		//get specific epsilon representation
+		//e.g. order=[1,1]
+		//N=2 total order
+		//epsilon^1.outer(epsilon^1)= 0 0 0 1
+		//							  0 0 0 0
+		//							  0 0 0 0
+		//							  0 0 0 0
+		//return 3
+		static size_t rep(const std::vector<size_t>& order, size_t N){
+			assert(*std::max_element(order.begin(), order.end()) <= N);
+			TriangularMatrix t(1);
+			t += 1;
+			for (auto& it : order) {
+				if (it != 0) t = t.outer(simple_epsilon(N + 1, it));
+				else t = t.outer(identity(N + 1));
+			}
+			int pos = 0;
+			while (t.m_lpBuf[pos] != 1 && pos<t.Size) pos++;
+			return pos;
+		}
+
+
 
 		//print current matrix
 		void print() {
@@ -267,6 +300,7 @@ namespace fms {
 		}
 	private:
 		double* m_lpBuf; // pointer to data
+		
 	};
 }
 inline fms::TriangularMatrix operator + (fms::TriangularMatrix A, const fms::TriangularMatrix& B)
@@ -318,4 +352,12 @@ inline fms::TriangularMatrix operator / (fms::TriangularMatrix A, const double& 
 inline fms::TriangularMatrix operator / (const double& B, fms::TriangularMatrix A)
 {
 	return A /= B;
+}
+inline std::vector<fms::TriangularMatrix> multi_epsilon(const std::vector<double>& x, size_t N) {
+	std::vector<fms::TriangularMatrix> result;
+	std::vector<fms::TriangularMatrix> epsilon = fms::TriangularMatrix::multi_epsilon(x.size(), N);
+	for (size_t i = 0; i < x.size();i++) {
+		result.emplace_back(x[i]+epsilon[i]);
+	}
+	return result;
 }
