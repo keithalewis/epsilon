@@ -280,7 +280,15 @@ namespace fms {
 			return pos;
 		}
 
-
+		//return x_i*I+epsilon_i
+		static std::vector<fms::TriangularMatrix> add_epsilon(const std::vector<double>& x, size_t N) {
+			std::vector<fms::TriangularMatrix> result;
+			std::vector<fms::TriangularMatrix> epsilon = fms::TriangularMatrix::multi_epsilon(x.size(), N);
+			for (size_t i = 0; i < x.size(); i++) {
+				result.emplace_back(epsilon[i]+=x[i]);
+			}
+			return result;
+		}
 
 		//print current matrix
 		void print() const {
@@ -345,12 +353,4 @@ inline fms::TriangularMatrix operator / (fms::TriangularMatrix A, const double& 
 inline fms::TriangularMatrix operator / (const double& B, fms::TriangularMatrix A)
 {
 	return A /= B;
-}
-inline std::vector<fms::TriangularMatrix> multi_epsilon(const std::vector<double>& x, size_t N) {
-	std::vector<fms::TriangularMatrix> result;
-	std::vector<fms::TriangularMatrix> epsilon = fms::TriangularMatrix::multi_epsilon(x.size(), N);
-	for (size_t i = 0; i < x.size();i++) {
-		result.emplace_back(x[i]+epsilon[i]);
-	}
-	return result;
 }
