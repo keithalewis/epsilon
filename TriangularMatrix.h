@@ -2,68 +2,54 @@
 #include <cstring>
 #include <cassert>
 #include <iostream>
+#include <valarray>
 #include <vector>
 #include <numeric>
 #include <algorithm>
 using std::cout;
 using std::endl;
-extern int test();
-extern int test2();
-extern int test3();
-extern int test4();
+
 namespace fms {
 	class TriangularMatrix {
-	public:
-		friend int ::test();
-		friend int ::test2();
-		friend int ::test3();
-		friend int ::test4();
+	public:		
 		size_t  Size;
 		//a_0 a_1 a_2 a_3
 		// 0  a_4 a_5 a_6
 		// 0   0  a_7 a_8
 		// 0   0   0  a_9
 		//matrix element in memory, 1D array
-		TriangularMatrix(size_t m = 0) {			
-			Size = m;
-			this->m_lpBuf = new double[(m + 1) * m / 2];
-			std::memset(m_lpBuf, 0, (m + 1) * m / 2 * sizeof(double));
-		};
-		TriangularMatrix(const TriangularMatrix& rhs) {			
-			this->Size = rhs.Size;
-			this->m_lpBuf = new double[(Size + 1) * Size / 2];
-			for (int i = 0; i < (Size * (Size + 1) / 2); ++i)
-				this->m_lpBuf[i] = rhs.m_lpBuf[i];
-		};
+		TriangularMatrix(size_t m = 0) 
+			: Size(m), m_lpBuf(0.0, (m + 1)* m / 2) {};
+
+		TriangularMatrix(const TriangularMatrix& rhs)
+			:Size(rhs.Size),m_lpBuf(rhs.m_lpBuf)
+		{};
+
+		//m*(m+1)/2=rhs_s
+		//m=sqrt(2*rhs_s+1/4)-1/2
+		TriangularMatrix(const std::initializer_list<double>& rhs)
+			:m_lpBuf(rhs),Size((size_t)(std::sqrt(2.0*rhs.size()+0.25)-.5)) { };
 		
 		TriangularMatrix(TriangularMatrix&& rhs) noexcept {			
 			this->Size = rhs.Size;
-			this->m_lpBuf = rhs.m_lpBuf;
-			rhs.m_lpBuf = nullptr;
+			this->m_lpBuf = std::move(rhs.m_lpBuf);			
 		};
 
 		~TriangularMatrix() {
 			Size = 0;
-			delete[] this->m_lpBuf;
-			this->m_lpBuf = nullptr;
 		};
 
 
 		TriangularMatrix& operator=(const TriangularMatrix& rhs) {
 			this->Size = rhs.Size;
-			delete[] this->m_lpBuf;
-			this->m_lpBuf = new double[(Size + 1) * Size / 2];
-			for (int i = 0; i < (Size * (Size + 1) / 2); ++i)
-				this->m_lpBuf[i] = rhs.m_lpBuf[i];
+			this->m_lpBuf = rhs.m_lpBuf;
 			return *this;
 		};
 
 		
 		TriangularMatrix& operator=(TriangularMatrix&& rhs) noexcept {
-			this->Size = rhs.Size;
-			delete [] this->m_lpBuf;
-			this->m_lpBuf = rhs.m_lpBuf;
-			rhs.m_lpBuf = nullptr;
+			this->Size = rhs.Size;			
+			this->m_lpBuf = std::move(rhs.m_lpBuf);			
 			return *this;
 		};
 		
@@ -71,10 +57,7 @@ namespace fms {
 
 		bool operator == (const TriangularMatrix& rhs) const{
 			if (this->Size != rhs.Size) return false;
-			for (size_t i = 0; i < Size; i++)
-				if (this->m_lpBuf[i] != rhs.m_lpBuf[i])
-					return false;
-			return true;			
+			return (m_lpBuf == rhs.m_lpBuf).min() == true;
 		}
 
 		bool operator !=(const TriangularMatrix& rhs) const {
@@ -83,11 +66,8 @@ namespace fms {
 
 		TriangularMatrix& operator += (const TriangularMatrix& rhs)
 		{
-			if (!rhs.m_lpBuf) return *this;
-			assert(rhs.Size == this->Size);
-			for (int i = 0; i < (Size + 1) * Size / 2; i++)
-				this->m_lpBuf[i] += rhs.m_lpBuf[i];
-
+			assert(rhs.Size == this->Size);			
+			m_lpBuf += rhs.m_lpBuf;
 			return *this;
 		}
 
@@ -101,11 +81,8 @@ namespace fms {
 
 		TriangularMatrix& operator -= (const TriangularMatrix& rhs)
 		{
-			if (!rhs.m_lpBuf) return *this;
 			assert(rhs.Size == this->Size);
-			for (int i = 0; i < (Size + 1) * Size / 2; i++)
-				this->m_lpBuf[i] -= rhs.m_lpBuf[i];
-
+			m_lpBuf -= rhs.m_lpBuf;
 			return *this;
 		}
 
@@ -122,9 +99,9 @@ namespace fms {
 		{
 			//if (!rhs.m_lpBuf) return *this;
 			assert(rhs.Size == this->Size);
-			double* temp = new double[this->Size];
+			std::valarray<double> temp((double)0, this->Size);			
 			for (size_t i = 0; i < Size; i++) {
-				std::memset(temp, 0, sizeof(double) * this->Size);
+				temp = std::valarray<double>((double)0, Size);
 				for (size_t j = i; j < Size; j++) {
 					double t = 0;
 					for (size_t k = i; k <= j; k++)
@@ -133,16 +110,14 @@ namespace fms {
 				}
 				for (size_t j = i; j < this->Size; j++)
 					operator()(i, j) = temp[j];
-			}
-			delete[] temp;
+			}			
 			return *this;
 		}
 
 		//this*rhs
 		TriangularMatrix& operator *= (const double& rhs)
 		{
-			for (int i = 0; i < (Size + 1) * Size / 2; i++)
-				m_lpBuf[i] *= rhs;
+			m_lpBuf *= rhs;
 			return *this;
 		}
 
@@ -152,9 +127,9 @@ namespace fms {
 			//if (!rhs.m_lpBuf) return *this;
 			assert(rhs.Size == this->Size);
 			TriangularMatrix rhs_inv = rhs.inverse();
-			double* temp = new double[this->Size];
+			std::valarray<double> temp((double)0, Size);
 			for (size_t i = 0; i < Size; i++) {
-				std::memset(temp, 0, sizeof(double) * this->Size);
+				temp = std::valarray<double>((double)0, Size);
 				for (size_t j = i; j < Size; j++) {
 					double t = 0;
 					for (size_t k = i; k <= j; k++)
@@ -164,15 +139,13 @@ namespace fms {
 				for (size_t j = i; j < this->Size; j++)
 					operator()(i, j) = temp[j];
 			}
-			delete[] temp;
 			return *this;
 		}
 
 		//this/rhs
 		TriangularMatrix& operator /= (const double& rhs)
 		{
-			for (int i = 0; i < (Size + 1) * Size / 2; i++)
-				m_lpBuf[i] /= rhs;
+			m_lpBuf /= rhs;
 			return *this;
 		}
 
@@ -183,23 +156,40 @@ namespace fms {
 			return *this;
 		}
 
-		
+		const double& operator ()(size_t i, size_t j) const
+		{
+			assert(i < Size);
+			assert(j < Size);
+			assert(j >= i);
+			//if (i > j) return 0;//visiting lower triangle element
+			return m_lpBuf [ Size * i - i * (i - 1) / 2 + j - i];
+		}
+
+		double& operator ()(size_t i, size_t j)
+		{
+			assert(i < Size);
+			assert(j < Size);
+			assert(j >= i);
+			//if (i > j) return 0;//visiting lower triangle element
+			return m_lpBuf[Size * i - i * (i - 1) / 2 + j - i];
+		}
 
 		//inverse(this)
 		//Gauss reduction method
 		TriangularMatrix inverse() const {
 			TriangularMatrix identity(Size);
+			TriangularMatrix copy_this(*this);
 			if (!Size) return *this;
 			identity += 1;
 			for (size_t i = Size - 1; i >= 0 && i <= Size - 1; i--) {//consider the ith row
 				for (size_t j = i; j < Size; j++)
-					identity(i, j) /= operator()(i, i);
-				operator()(i, i) = 1;
+					identity(i, j) /= copy_this(i, i);
+				copy_this(i, i) = 1;
 				if (i == 0) continue;
 				for (size_t j = i - 1; j >= 0 && j <= i - 1; j--) {
 					for (size_t k = i; k < Size; k++)
-						identity(j, k) -= operator()(j, i) * identity(i, k);
-					operator()(j, i) = 0;
+						identity(j, k) -= copy_this(j, i) * identity(i, k);
+					copy_this(j, i) = 0;
 				}
 			}
 			//for (size_t i = 0; i < (Size + 1) * Size / 2; i++)
@@ -215,7 +205,7 @@ namespace fms {
 					for (size_t r_i=0; r_i < rhs.Size; r_i++) {
 						for (size_t r_j=r_i; r_j < rhs.Size; r_j++) {
 							if (i * rhs.Size + r_i <= j * rhs.Size + r_j) {
-								result.operator()(i * rhs.Size + r_i, j * rhs.Size + r_j) = operator()(i, j) * rhs(r_i, r_j);
+								result(i * rhs.Size + r_i, j * rhs.Size + r_j) = operator()(i, j) * rhs(r_i, r_j);
 							}
 						}
 					}
@@ -293,7 +283,7 @@ namespace fms {
 
 
 		//print current matrix
-		void print() {
+		void print() const {
 			for (size_t i = 0; i < Size; i++) {
 				for (size_t j = 0; j < Size; j++)
 					if (j < i) std::cout << 0 << ' ';
@@ -302,15 +292,8 @@ namespace fms {
 			}
 		}
 	private:
-		double* m_lpBuf; // pointer to data
-		double& operator ()(size_t i, size_t j) const
-		{
-			assert(i < Size);
-			assert(j < Size);
-			assert(j >= i);
-			//if (i > j) return 0;//visiting lower triangle element
-			return *(m_lpBuf + Size * i - i * (i - 1) / 2 + j - i);
-		}
+		std::valarray<double> m_lpBuf; // data container
+		
 	};
 }
 inline fms::TriangularMatrix operator + (fms::TriangularMatrix A, const fms::TriangularMatrix& B)

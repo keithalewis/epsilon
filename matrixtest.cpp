@@ -111,8 +111,32 @@ int test() {
 	std::vector<TriangularMatrix>epsilon_list = TriangularMatrix::multi_epsilon(3, 1);
 	for (int i = 0; i < epsilon_list.size(); i++) {
 		epsilon_list[i].print();
+		std::cout << std::endl;
 	}
-	
+	assert(epsilon_list[0] == TriangularMatrix({0,0,0,0,1,0,0,0,
+												0,0,0,0,1,0,0,
+												0,0,0,0,1,0,
+												0,0,0,0,1,
+												0,0,0,0,
+												0,0,0,
+												0,0,
+												0}));
+	assert(epsilon_list[1] == TriangularMatrix({0,0,1,0,0,0,0,0,
+												0,0,1,0,0,0,0,
+												0,0,0,0,0,0,
+												0,0,0,0,0,
+												0,0,1,0,
+												0,0,1,
+												0,0,
+												0}));
+	assert(epsilon_list[2] == TriangularMatrix({0,1,0,0,0,0,0,0,
+												0,0,0,0,0,0,0,
+												0,1,0,0,0,0,
+												0,0,0,0,0,
+												0,1,0,0,
+												0,0,0,
+												0,1,
+												0}));
 	return 0;
 }
 
