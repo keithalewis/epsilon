@@ -7,9 +7,17 @@
 #include <algorithm>
 using std::cout;
 using std::endl;
+extern int test();
+extern int test2();
+extern int test3();
+extern int test4();
 namespace fms {
 	class TriangularMatrix {
 	public:
+		friend int ::test();
+		friend int ::test2();
+		friend int ::test3();
+		friend int ::test4();
 		size_t  Size;
 		//a_0 a_1 a_2 a_3
 		// 0  a_4 a_5 a_6
@@ -59,14 +67,7 @@ namespace fms {
 			return *this;
 		};
 		
-		double& operator ()(size_t i, size_t j) const
-		{
-			assert(i < Size);
-			assert(j < Size);
-			assert(j >= i);
-			//if (i > j) return 0;//visiting lower triangle element
-			return *(m_lpBuf + Size * i - i * (i - 1) / 2 + j - i);
-		}
+		
 
 		bool operator == (const TriangularMatrix& rhs) const{
 			if (this->Size != rhs.Size) return false;
@@ -181,6 +182,8 @@ namespace fms {
 			operator*=(-1);
 			return *this;
 		}
+
+		
 
 		//inverse(this)
 		//Gauss reduction method
@@ -300,7 +303,14 @@ namespace fms {
 		}
 	private:
 		double* m_lpBuf; // pointer to data
-		
+		double& operator ()(size_t i, size_t j) const
+		{
+			assert(i < Size);
+			assert(j < Size);
+			assert(j >= i);
+			//if (i > j) return 0;//visiting lower triangle element
+			return *(m_lpBuf + Size * i - i * (i - 1) / 2 + j - i);
+		}
 	};
 }
 inline fms::TriangularMatrix operator + (fms::TriangularMatrix A, const fms::TriangularMatrix& B)

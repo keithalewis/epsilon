@@ -161,37 +161,37 @@ int test2() {
 }
 
 template<class X>
-X q(X x, X y, X z) {
+X q(const X& x, const X& y, const X& z) {
 	return (x*x+y*y)/z;
 }
 
 template<class X>
-X dq_dx(X x, X y, X z) {
+X dq_dx(const X& x, const X& y, const X& z) {
 	return (2*x)/z;
 }
 
 template<class X>
-X dq_dy(X x, X y, X z) {
+X dq_dy(const X& x, const X& y, const X& z) {
 	return (2*y)/z;
 }
 
 template<class X>
-X dq_dz(X x, X y, X z) {
+X dq_dz(const X& x, const X& y, const X& z) {
 	return -(x * x + y * y) / (z*z);
 }
 
 template<class X>
-X d2q_dx_dy(X x, X y,X z) {
+X d2q_dx_dy(const X& x, const X& y, const X& z) {
 	return 0;
 }
 
 template<class X>
-X d2q_dx_dz(X x, X y,X z) {
+X d2q_dx_dz(const X& x, const X& y, const X& z) {
 	return -(2 * x) / (z*z);
 }
 
 template<class X>
-X d3q_dx_dy_dz(X x, X y, X z) {
+X d3q_dx_dy_dz(const X& x, const X& y, const X& z) {
 	return 0;
 }
 
@@ -229,7 +229,39 @@ int test3() {
 	cout << "Test suceessfully ends." << endl;
 	return 0;
 }
+template<class X>
+X p(const X& x)
+{
+	return 1 + 2 * x + 3 * x * x;
+}
+template<class X>
+X dp_dx(const X& x)
+{
+	return 2 + 6 * x;
+}
+template<class X>
+X d2p_dx2([[maybe_unused]] const X& x)
+{
+	return 6;
+}
+int test4() {
+	size_t index;
+	double x = 1.0;
+	auto epsilon = multi_epsilon({ x }, 3);
+	auto e_x = epsilon[0];
+	auto dp = p(e_x);
+	index= fms::TriangularMatrix::rep({ 0 }, 3);
+	assert(dp(0, index) == p(x));
+	index = fms::TriangularMatrix::rep({ 1 }, 3);
+	assert(dp(0, index) == dp_dx(x));
+	index = fms::TriangularMatrix::rep({ 2 }, 3);
+	assert(dp(0, index) == d2p_dx2(x)/2.0);
+	index = fms::TriangularMatrix::rep({ 3 }, 3);
+	assert(dp(0, index) == 0);
+	return 0;
+}
 
 static int a = test();
 static int b = test2();
 static int c = test3();
+static int d = test4();
