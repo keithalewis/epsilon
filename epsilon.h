@@ -10,6 +10,8 @@ namespace fms {
 
     template<size_t N, class X = double, class = IsArithmetic<X>>
     class epsilon {
+		template<size_t n, class Y, class>
+		friend epsilon<n, Y> exp2(const epsilon<n, Y>& x);
         // a[0], ..., a[N-1] <-> sum_{k < N} a_k epsilon^k/k!
         std::valarray<X> a;
     public:
@@ -240,3 +242,4 @@ inline fms::epsilon<N, X> operator/(const Y& a, fms::epsilon<N, X> b)
 {
     return (a + fms::epsilon<N,X>()) /= b;
 }
+
