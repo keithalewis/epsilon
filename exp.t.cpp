@@ -75,7 +75,7 @@ int test_expn_exp2n_at_small()
 static int test_expn_exp2n_at_small_double = test_expn_exp2n_at_small<2, double>();
 
 template<size_t N, class X>
-int test_expn_exp2n_at_large()
+int test_expn_exp2n_exp3n_at_large()
 {
 	X x = 10;
 	epsilon<N, X> x_(x, 1);
@@ -88,13 +88,19 @@ int test_expn_exp2n_at_large()
 		assert(fabs(ex[1] - expx) <= 16384 * std::numeric_limits<X>::epsilon());
 	}
 
-	ex = fms::exp2(x_);
-	//std::cout << fabs(ex[0] - expx) / std::numeric_limits<X>::epsilon() << std::endl;
+	ex = fms::exp2(x_);	
 	assert(fabs(ex[0] - expx) <= 0 * std::numeric_limits<X>::epsilon());
 	if constexpr (N > 1) {
 		assert(fabs(ex[1] - expx) <= 0 * std::numeric_limits<X>::epsilon());
 	}
 
+	ex = fms::exp3(x_);
+	//std::cout << fabs(ex[0] - expx) / std::numeric_limits<X>::epsilon() << std::endl;
+	assert(fabs(ex[0] - expx) <= 114688 * std::numeric_limits<X>::epsilon());
+	if constexpr (N > 1) {
+		assert(fabs(ex[1] - expx) <= 114688 * std::numeric_limits<X>::epsilon());
+	}
+
 	return 0;
 }
-static int test_expn_exp2n_at_large_double = test_expn_exp2n_at_large<2, double>();
+static int test_expn_exp2n_exp3n_at_large_double = test_expn_exp2n_exp3n_at_large<2, double>();
