@@ -2,18 +2,13 @@
 #pragma once
 #include "epsilon.h"
 #include <vector>
+#include <cmath>
 namespace fms {
 
     template<class X>
     inline X exp(const X& x)
     {
-        //!!! normalize x
-        // Use frexp and ldrexp.
-		//frexp(x): x= arg * 2^E
-		//arg is in the range (-1;-0.5], [0.5; 1)
-		//e^(arg*2^E) = (e^arg) ^ (2^E)
-        // Requires log_e 2.
-		X ex = 1;
+        X ex = 1;
         X xn_(x); // x^n/n!
 		
         int n = 1;
@@ -36,18 +31,21 @@ namespace fms {
 	template<size_t N, class X=double>
 	inline epsilon<N,X> expIN(const X& x, const size_t& I)
 	{
+		auto factorial = [](const size_t& i) {return std::tgamma(i + 1); };
 		static_assert (0 != N);
-		//!!if constexpr (0 == I) {
 		if (0 == I){
 			return epsilon<N, X>(exp(x));
 		}
-
+		//to standard Toeplitz matrix representation
+		auto x_ = x / factorial(I);
 		std::vector<X> xn(N);
 		X xn_ = 1; // xn_ = x^n/n!
 		xn[0] = 1;
 		for (size_t i = 1; i * I < N; ++i) {
-			xn_ *= x / i;
+			xn_ *= x_ / i;
 			xn[i * I] = xn_;
+			//back to our representation
+			xn[i * I] *= factorial(i * I);
 		}
 
 		return epsilon<N, X>(xn.data());
@@ -55,11 +53,16 @@ namespace fms {
 
 	template<size_t N, class X = double>
 	epsilon<N, X> exp2(const epsilon<N, X>& x) {
-		//!!epsilon<N, X> res(expIN<0, N, X>(x[0]));
 		epsilon<N, X> res(expIN<N, X>(x[0], 0));
 		for (size_t i = 1; i < N; i++)
-			//!!res *= expIN<i, N, X>(x[i]);
 			res *= expIN<N, X>(x[i], i);
+		return res;
+	}
+
+	template<size_t N, class X = double>
+	epsilon<N, X> exp3(const epsilon<N, X>& x) {
+		epsilon<N, X> res(expIN<N, X>(x[0], 0));
+		res *= exp(x - epsilon<N, X>(x[0]));
 		return res;
 	}
 

@@ -87,15 +87,20 @@ int test_expn_higher_order()
 	epsilon<N, X> x_({ 10,2,0.1 });
 	auto ex = fms::exp2(x_);
 
-	std::vector<X> expx({ ::exp(10),::exp(10) * 2, ::exp(10) * 2.1 });
+	std::vector<X> expx({ ::exp(10),::exp(10) * 2, ::exp(10) * 4.1 });
 
-	ex = fms::exp2(x_);
+	assert(fabs(ex[0] - expx[0]) <= 0 * std::numeric_limits<X>::epsilon());
+	if constexpr (N > 1) {
+		assert(fabs(ex[1] - expx[1]) <= 0 * std::numeric_limits<X>::epsilon());		
+		assert(fabs(ex[2] - expx[2]) <= 65536 * std::numeric_limits<X>::epsilon());
+	}
+
+	ex = fms::exp3(x_);
 	assert(fabs(ex[0] - expx[0]) <= 0 * std::numeric_limits<X>::epsilon());
 	if constexpr (N > 1) {
 		assert(fabs(ex[1] - expx[1]) <= 0 * std::numeric_limits<X>::epsilon());
 		assert(fabs(ex[2] - expx[2]) <= 0 * std::numeric_limits<X>::epsilon());
 	}
-
 	return 0;
 }
 static int test_expn_higher_order_double = test_expn_higher_order<3, double>();
