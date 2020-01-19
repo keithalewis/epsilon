@@ -31,7 +31,7 @@ namespace fms {
 	//erf(x)=2/sqrt(pi) * Int_0^x exp(-t*t) dt
 	//		=2/sqrt(pi) * Int_0^(aI+B) exp(-t*t) dt
 	//		=2/sqrt(pi) [Int_0^aI exp(-t*t) dt + exp(-a*a) B + exp(-a*a)'/2 B^2 + ...]
-	//		=2/sqrt(pi) [erf(a) I + exp(-a*a) B + exp(-a*a)'/2 B^2 + ...]
+	//		=2/sqrt(pi) erf(a) I + 2/sqrt(pi) [exp(-a*a) B + exp(-a*a)'/2 B^2 + ...]
 	template<size_t N, class X = double>
 	epsilon<N, X> erf2(const epsilon<N, X>& x) {
 		epsilon<N, X> res(erf(x[0]));
