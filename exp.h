@@ -24,114 +24,43 @@ namespace fms {
 
         return ex;
     }
-	
-	template<size_t N, class Y = double, class = IsArithmetic<Y>>
-	inline epsilon<N, Y> exp2(const epsilon<N, Y>& x) {
-		using X = epsilon<N, Y>;
-		X res;
-		res += ::exp(x.a[0]);
-		//decompose x by each of its element
-		// a b c   a 0 0   0 b 0   0 0 c
-		// 0 a b = 0 a 0 + 0 0 b + 0 0 0
-		// 0 0 a   0 0 a   0 0 0   0 0 0
-		for (size_t i = 1; i < N; i++) {
-			auto num = x[i];
-			//write num=A * 2^E
-			//with 0.5<=abs(A)<1
-			int E;
-			auto A = std::frexp(num, &E);
-			if (E > 0) {
-				//epsilon_A=[0,...,A,...,0]
-				X ex = 1;
+	template<>
+	inline double exp(const double& x){
+		return ::exp(x);
+	}
 
-				// (epsilon_A)^n/n!
-				X xn_;
-				xn_.a[i] = A;
-				X xn__(xn_);
-				int n = 1;
-				while (xn_ + X(1) != X(1)) {
-					ex += xn_;
-					xn_ *= xn__ / ++n;
-				}
-				auto power = std::ldexp(1.0, E);
-				while (power) {
-					res *= ex;
-					power--;
-				}
-			}
-			else {
-				//epsilon_num=[0,...,num,...,0]
-				X ex = 1;
-				// (epsilon_num)^n/n!
-				X xn_;
-				xn_.a[i] = num;
-
-				X xn__(xn_);
-
-				int n = 1;
-				while (fabs(xn_) + X(1) != X(1)) {
-					ex += xn_;
-					xn_ *= xn__ / ++n;
-				}
-				res *= ex;
-			}
-			
+	// Return exp(x J^I)
+	//!!this definition isn't compatible with later exp2()
+	//!!template<size_t I, size_t N, class X = double>
+	//!!inline epsilon<N, X> expIN(const X& x)
+	template<size_t N, class X=double>
+	inline epsilon<N,X> expIN(const X& x, const size_t& I)
+	{
+		static_assert (0 != N);
+		//!!if constexpr (0 == I) {
+		if (0 == I){
+			return epsilon<N, X>(exp(x));
 		}
+
+		std::vector<X> xn(N);
+		X xn_ = 1; // xn_ = x^n/n!
+		xn[0] = 1;
+		for (size_t i = 1; i * I < N; ++i) {
+			xn_ *= x / i;
+			xn[i * I] = xn_;
+		}
+
+		return epsilon<N, X>(xn.data());
+	}
+
+	template<size_t N, class X = double>
+	epsilon<N, X> exp2(const epsilon<N, X>& x) {
+		//!!epsilon<N, X> res(expIN<0, N, X>(x[0]));
+		epsilon<N, X> res(expIN<N, X>(x[0], 0));
+		for (size_t i = 1; i < N; i++)
+			//!!res *= expIN<i, N, X>(x[i]);
+			res *= expIN<N, X>(x[i], i);
 		return res;
 	}
 
-	template<size_t N, class Y = double, class = IsArithmetic<Y>>
-	inline epsilon<N, Y> exp3(const epsilon<N, Y>& x) {
-		using X = epsilon<N, Y>;
-		X res;
-		res += 1;
-		//decompose x by each of its element
-		// a b c   a 0 0   0 b 0   0 0 c
-		// 0 a b = 0 a 0 + 0 0 b + 0 0 0
-		// 0 0 a   0 0 a   0 0 0   0 0 0
-		for (size_t i = 0; i < N; i++) {
-			auto num = x[i];
-			//write num=A * 2^E
-			//with 0.5<=abs(A)<1
-			int E;
-			auto A = std::frexp(num, &E);
-			if (E > 0) {
-				//epsilon_A=[0,...,A,...,0]
-				X ex = 1;
-
-				// (epsilon_A)^n/n!
-				X xn_;
-				xn_.a[i] = A;
-				X xn__(xn_);
-				int n = 1;
-				while (xn_ + X(1) != X(1)) {
-					ex += xn_;
-					xn_ *= xn__ / ++n;
-				}
-				auto power = std::ldexp(1.0, E);
-				while (power) {
-					res *= ex;
-					power--;
-				}
-			}
-			else {
-				//epsilon_num=[0,...,num,...,0]
-				X ex = 1;
-				// (epsilon_num)^n/n!
-				X xn_;
-				xn_.a[i] = num;
-
-				X xn__(xn_);
-
-				int n = 1;
-				while (fabs(xn_) + X(1) != X(1)) {
-					ex += xn_;
-					xn_ *= xn__ / ++n;
-				}
-				res *= ex;
-			}
-
-		}
-		return res;
-	}
 }
