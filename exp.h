@@ -14,7 +14,7 @@ namespace fms {
         int n = 1;
         while (fabs(xn_) + X(1) != X(1)) {
             ex += xn_;
-            xn_ *= x / ++n;
+            xn_ *= x / ++n;			
         }
 
         return ex;

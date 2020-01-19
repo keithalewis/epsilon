@@ -104,3 +104,51 @@ int test_expn_higher_order()
 	return 0;
 }
 static int test_expn_higher_order_double = test_expn_higher_order<3, double>();
+
+
+template<class X>
+X p(const X& x)
+{
+	return 1 + 2 * x + 3 * x * x;
+}
+template<class X>
+X dp(const X& x)
+{
+	return 2 + 6 * x;
+}
+template<class X>
+X ddp([[maybe_unused]] const X& x)
+{
+	return 6;
+}
+
+/*
+template<class X>
+X q(const X& x)
+{
+	return fms::exp(-x * x);
+}
+template<class X>
+X dq(const X& x)
+{
+	return -2*x* fms::exp(-x * x);
+}
+template<class X>
+X ddq([[maybe_unused]] const X& x)
+{
+	return (4*x*x-2) * fms::exp(-x * x);
+}
+
+int test_exp_derivative()
+{
+	
+	double x = 1;
+	epsilon<3, double> e(x, 1);
+	auto qe = q(e);
+	assert(fabs(qe[0] - q(x)) <= 1 * std::numeric_limits<double>::epsilon());
+	assert(fabs(qe[1] - dq(x)) <= 1 * std::numeric_limits<double>::epsilon());
+	assert(fabs(qe[2] - ddq(x)) <= 1 * std::numeric_limits<double>::epsilon());
+	return 0;
+}
+
+static int exp_derivative = test_exp_derivative();*/

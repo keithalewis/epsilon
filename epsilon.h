@@ -66,11 +66,12 @@ namespace fms {
             return a[n];
         }
 
-        epsilon& operator-()
+        epsilon operator-() const
         {
-            operator*=(X(-1));
+			epsilon<N, X> res(*this);
+            res.operator*=(X(-1));
 
-            return *this;
+            return res;
         }
 
         epsilon& operator+=(const epsilon& b)
