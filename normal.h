@@ -70,9 +70,13 @@ namespace fms {
 	template<class X>
 	inline X cdf(const X& x)
 	{
-		return X(0.5) +  X(0.5)*erf(x* M_SQRT1_2);
+		return X(0.5) +  erf(x* M_SQRT1_2) * 0.5;
 	}
 
-	
+	template<class X>
+	inline X cdf2(const X& x)
+	{
+		return X(0.5) + erf2(x * M_SQRT1_2) * 0.5;
+	}
 	
 }
