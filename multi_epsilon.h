@@ -201,7 +201,6 @@ namespace fms {
 		}
 
 		//inverse(this)
-		//Gauss reduction method
 		multi_epsilon inverse() const {
 			multi_epsilon res(m, N-1);
 			res[0] = 1.0 / m_lpBuf[0];
@@ -217,8 +216,8 @@ namespace fms {
 		
 
 		//static method identity
-		//(n-1) th order derivative
-		//dimension of matrix=n
+		//n th order derivative
+		//dimension of matrix=n+1
 		static multi_epsilon identity(intptr_t m, intptr_t n) {
 			multi_epsilon result(m,n);
 			result += 1;
@@ -226,8 +225,8 @@ namespace fms {
 		}
 
 
-		//epsilon \otimes epsilon \otimes I
-		//return 3
+		//epsilon \otimes epsilon \otimes I_2
+		//return 6
 		static intptr_t rep(const std::vector<intptr_t>& order, const intptr_t n) {
 			intptr_t res=order[0]+1;
 			for (intptr_t i = 1; i < order.size(); i++) {

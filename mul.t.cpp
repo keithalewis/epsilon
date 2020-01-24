@@ -154,7 +154,7 @@ int mul_test3() {
 	auto dq = q(e_x, e_y, e_z);
 	//test q|(x=1.0,y=2.0,z=3.0)
 	index = multi_epsilon::rep({ 0,0,0 }, 1);
-	assert(fabs(dq(0, index) - q(x, y, z)) < .001);
+	assert(fabs(dq(0, index) - q(x, y, z)) <= .001);
 	//test dq/dx|(x=1.0,y=2.0,z=3.0)
 	index = multi_epsilon::rep({ 1,0,0 }, 1);
 	assert(dq(0, index) == dq_dx(x, y, z));
