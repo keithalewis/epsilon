@@ -243,7 +243,7 @@ namespace fms {
 				multi_epsilon temp = identity(x.size(), n);
 				temp *= x[i];
 				temp[rep(order, n)] = 1.0;
-				result.emplace_back(temp);
+				result.emplace_back(std::move(temp));
 				order[i] = 0;
 			}
 			return result;
