@@ -153,6 +153,7 @@
     <ClInclude Include="epsilon.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="hermite.h" />
+    <ClInclude Include="multi_epsilon.h" />
     <ClInclude Include="normal.h" />
     <ClInclude Include="pow.h" />
     <ClInclude Include="TriangularMatrix.h" />

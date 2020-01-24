@@ -2,29 +2,298 @@
 #include <cstring>
 #include <cassert>
 #include <iostream>
-#include <functional>
-#include "TriangularMatrix.h"
+#include <valarray>
+#include <vector>
+#include <numeric>
+#include <algorithm>
+using std::cout;
+using std::endl;
+using std::vector;
 namespace fms {
-	class multi_epsilon{
+	class multi_epsilon {
 	public:
-		multi_epsilon(const size_t N) : N(N) {};
-		~multi_epsilon() {};
+		intptr_t  Size;
+		intptr_t N;//N=2 if only consider 1st order derivative
+		//!! needs more thoughts on how to implement this
+		double zero = 0;
 
-		void calc(const std::function<fms::TriangularMatrix(...)> &f, std::vector<double>& x) {
-			std::vector<fms::TriangularMatrix> epsilon = fms::TriangularMatrix::multi_epsilon(x.size(), N);
-			for (size_t i = 0; i < x.size(); i++) {
-				mat.emplace_back(x[i] + epsilon[i]);
+		//m variable,  derivatives up to order n
+		multi_epsilon(intptr_t m = 0, intptr_t n=0)
+			: Size(m), m_lpBuf(0.0, pow(n+1,m)), N(n+1) {};
+
+		multi_epsilon(const multi_epsilon& rhs)
+			:Size(rhs.Size), m_lpBuf(rhs.m_lpBuf), N(rhs.N)
+		{};
+
+		
+		multi_epsilon(const std::initializer_list<double>& rhs, intptr_t n)
+			:m_lpBuf(rhs), Size(rhs.size()), N(n+1) { };
+
+		multi_epsilon(multi_epsilon&& rhs) noexcept {
+			this->Size = rhs.Size;
+			this->m_lpBuf = std::move(rhs.m_lpBuf);
+		};
+
+		~multi_epsilon() {
+			Size = 0;
+		};
+
+
+		multi_epsilon& operator=(const multi_epsilon& rhs) {
+			this->Size = rhs.Size;
+			this->m_lpBuf = rhs.m_lpBuf;
+			return *this;
+		};
+
+
+		multi_epsilon& operator=(multi_epsilon&& rhs) noexcept {
+			this->Size = rhs.Size;
+			this->m_lpBuf = std::move(rhs.m_lpBuf);
+			return *this;
+		};
+
+
+
+		bool operator == (const multi_epsilon& rhs) const {
+			if (this->Size != rhs.Size) return false;
+			return (m_lpBuf == rhs.m_lpBuf).min() == true;
+		}
+
+		bool operator !=(const multi_epsilon& rhs) const {
+			return !operator==(rhs);
+		}
+
+		multi_epsilon& operator += (const multi_epsilon& rhs)
+		{
+			assert(rhs.Size == this->Size);
+			m_lpBuf += rhs.m_lpBuf;
+			return *this;
+		}
+
+		//this+rhs*I
+		multi_epsilon& operator += (const double& rhs)
+		{
+			m_lpBuf[0] += rhs;
+			return *this;
+		}
+
+		multi_epsilon& operator -= (const multi_epsilon& rhs)
+		{
+			assert(rhs.Size == this->Size);
+			m_lpBuf -= rhs.m_lpBuf;
+			return *this;
+		}
+
+		//this-rhs*I
+		multi_epsilon& operator -= (const double& rhs)
+		{
+			m_lpBuf[0] -= rhs;
+			return *this;
+		}
+
+		//matrix multiplication
+		//only need to calculate the first row
+		multi_epsilon& operator *= (const multi_epsilon& rhs)
+		{
+			//if (!rhs.m_lpBuf) return *this;
+			assert(rhs.Size == this->Size);
+			std::valarray<double> temp((double)0, this->Size);
+			intptr_t i = 0;
+			{
+				temp = std::valarray<double>((double)0, Size);
+				for (intptr_t j = 0; j < Size; j++) {
+					double t = 0;
+					for (intptr_t k = 0; k <= j; k++)
+						t += operator()(i, k) * rhs(k, j);
+					temp[j] = t;
+				}
+				//for (intptr_t j = i; j < this->Size; j++)
+				//	m_lpBuf[j] = temp[j];
+				std::swap(m_lpBuf, temp);
 			}
-			
+			return *this;
+		}
+
+		//this*rhs
+		multi_epsilon& operator *= (const double& rhs)
+		{
+			m_lpBuf *= rhs;
+			return *this;
+		}
+
+		//matrix division
+		multi_epsilon& operator /= (const multi_epsilon& rhs)
+		{
+			//if (!rhs.m_lpBuf) return *this;
+			assert(rhs.Size == this->Size);
+			multi_epsilon rhs_inv = rhs.inverse();
+			operator*=(rhs_inv);
+			return *this;
+		}
+
+		//this/rhs
+		multi_epsilon& operator /= (const double& rhs)
+		{
+			m_lpBuf /= rhs;
+			return *this;
+		}
+
+		//-1*this
+		multi_epsilon operator -()
+		{
+			multi_epsilon res(*this);
+			res*=(-1.0);
+			return res;
+		}
+
+		const double& operator ()(intptr_t i, intptr_t j) const
+		{
+			assert(i < Size);
+			assert(j < Size);
+			assert(j >= i);
+			intptr_t k = N;
+			while (k <= Size) {
+				if ((i % k) > (j % k))
+					return 0;
+				k *= N;
+			}
+			return m_lpBuf[j - i];
+		}
+
+		double& operator ()(intptr_t i, intptr_t j)
+		{
+			assert(i < Size);
+			assert(j < Size);
+			assert(j >= i);
+			//if (i > j) return 0;//visiting lower triangle element
+			intptr_t k = N;
+			while (k <= Size) {
+				if ((i % k) > (j % k))
+					return zero;
+				k *= N;
+			}
+			return m_lpBuf[j - i];
+		}
+
+		const double& operator [](intptr_t i) const {
+			return m_lpBuf[i];
+		}
+
+		double& operator [](intptr_t i) {
+			return m_lpBuf[i];
+		}
+
+		//inverse(this)
+		//Gauss reduction method
+		multi_epsilon inverse() const {
+			multi_epsilon res(Size, N-1);
+			res[0] = 1.0 / m_lpBuf[0];
+			for (intptr_t i = 1; i < Size; i++) {
+				double cum_prod = 0;
+				for (intptr_t j = 1; j <= i; j++)
+					cum_prod += m_lpBuf[j] * res(j, i);
+				res[i] = -cum_prod / m_lpBuf[0];
+			}
+			return res;
+		}
+
+		
+
+		//static method identity
+		//(n-1) th order derivative
+		//dimension of matrix=n
+		static multi_epsilon identity(intptr_t m, intptr_t n) {
+			multi_epsilon result(m,n);
+			result += 1;
+			return result;
+		}
+
+
+		//epsilon \otimes epsilon \otimes I
+		//= 2*2*1 -1
+		//return 3
+		static intptr_t rep(const std::vector<intptr_t>& order) {
+			intptr_t res=1;
+			for (intptr_t i = 0; i < order.size(); i++) {
+				res *= (order[i] + 1);
+			}
+			return res - 1;
+		}
+
+		static vector<multi_epsilon> add_epsilon(const vector<double>& x, intptr_t n) {
+			vector<multi_epsilon> result;
+			vector<intptr_t> order(0.0,x.size());
+			for (intptr_t i = 0; i < x.size(); i++) {
+				order[i] = 1.0;
+				multi_epsilon temp = identity(x.size(), n);
+				temp *= x[i];
+				temp[rep(order)] = 1.0;
+				result.emplace_back(std::move(temp));
+				order[i] = 0.0;
+			}
+			return result;
 		}
 		
-		double get_derivative(std::vector<size_t> order) {
-
-		};
+		//print current matrix
+		void print() const {
+			for (intptr_t i = 0; i < Size; i++) {
+				for (intptr_t j = 0; j < Size; j++)
+					if (j < i) std::cout << 0 << ' ';
+					else std::cout << operator()(i, j) << ' ';
+				std::cout << std::endl;
+			}
+		}
 	private:
-		size_t N;
-		std::vector<double> x;
-		std::vector<fms::TriangularMatrix> mat;
-		fms::TriangularMatrix result;
+		std::valarray<double> m_lpBuf; // data container
 	};
+}
+inline fms::multi_epsilon operator + (fms::multi_epsilon A, const fms::multi_epsilon& B)
+{
+	return A += B;
+}
+inline fms::multi_epsilon operator + (fms::multi_epsilon A, const double& B)
+{
+	return A += B;
+}
+inline fms::multi_epsilon operator + (const double& B, fms::multi_epsilon A)
+{
+	return A += B;
+}
+inline fms::multi_epsilon operator - (fms::multi_epsilon A, const fms::multi_epsilon& B)
+{
+	return A -= B;
+}
+inline fms::multi_epsilon operator - (fms::multi_epsilon A, const double& B)
+{
+	return A -= B;
+}
+inline fms::multi_epsilon operator - (const double& B, fms::multi_epsilon A)
+{
+	return A -= B;
+}
+inline fms::multi_epsilon operator * (fms::multi_epsilon A, const fms::multi_epsilon& B)
+{
+	A *= B;
+	return A;
+}
+inline fms::multi_epsilon operator * (fms::multi_epsilon A, const double& B)
+{
+	A *= B;
+	return A;
+}
+inline fms::multi_epsilon operator * (const double& B, fms::multi_epsilon A)
+{
+	return A *= B;
+}
+inline fms::multi_epsilon operator / (fms::multi_epsilon A, const fms::multi_epsilon& B)
+{
+	return A /= B;
+}
+inline fms::multi_epsilon operator / (fms::multi_epsilon A, const double& B)
+{
+	return A /= B;
+}
+inline fms::multi_epsilon operator / (const double& B, fms::multi_epsilon A)
+{
+	return A /= B;
 }

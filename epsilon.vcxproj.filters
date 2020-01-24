@@ -36,6 +36,9 @@
     <ClInclude Include="normal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="multi_epsilon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epsilon.t.cpp">
