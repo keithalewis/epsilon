@@ -17,7 +17,7 @@ int test_erf()
 static int test_erf_double = test_erf<double>();
 
 
-template<intptr_t N, class X>
+template<size_t N, class X>
 int test_erfn()
 {
 	X x = 1;
@@ -46,7 +46,7 @@ int test_erfn()
 }
 static int test_erfn_double = test_erfn<3, double>();
 
-template<intptr_t N, class X>
+template<size_t N, class X>
 int test_erf2n()
 {
 	X x = 1;
@@ -89,7 +89,7 @@ int test_cdf()
 }
 static int test_cdf_double = test_cdf<double>();
 
-template<intptr_t N, class X>
+template<size_t N, class X>
 int test_cdfn()
 {
 	X x = 1;
@@ -119,7 +119,7 @@ int test_cdfn()
 
 static int test_cdfn_double = test_cdfn<3, double>();
 
-template<intptr_t N, class X>
+template<size_t N, class X>
 int test_cdf2n()
 {
 	X x = 1;

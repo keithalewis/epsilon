@@ -61,9 +61,9 @@ namespace fms {
 		auto factorial = [](const size_t& i) {return std::tgamma(i + 1); };
 		X res = 0;
 		for (size_t k = 0; k <= std::floor(N / 2.0); k++) {
-			res += pow(-4, -k) * pow(x, -2 * k) / factorial(k) / factorial(-2 * k + N);
+			res += pow(-4, -1 * k) * pow(x, -2 * k) / factorial(k) / factorial(-2 * k + N);
 		}
-		return res * std::ldexp(1.0, N) * ::exp(-x * x) * pow(-x, N);
+		return res * pow(2.0, (X)N) * ::exp(-x * x) * pow(-x, (X)N);
 	}
 
 	//PHI(x)=1/2+erf(x/sqrt2)/2
