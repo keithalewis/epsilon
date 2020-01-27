@@ -11,12 +11,13 @@ using std::endl;
 using std::vector;
 namespace fms {
 	class multi_epsilon {
-	public:
+	private:
+		std::valarray<double> m_lpBuf; // data container
 		size_t m;//how many variables
 		size_t Size;//size of m_lpBuf
 		size_t N;//N=2 if only consider 1st order derivative
-		
 		const double zero = 0;
+	public:
 
 		//m variable,  derivatives up to order n
 		multi_epsilon(size_t m = 0, size_t n=0)
@@ -257,8 +258,7 @@ namespace fms {
 				std::cout << std::endl;
 			}
 		}
-	private:
-		std::valarray<double> m_lpBuf; // data container
+	
 	};
 }
 inline fms::multi_epsilon operator + (fms::multi_epsilon A, const fms::multi_epsilon& B)
