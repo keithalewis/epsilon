@@ -1,5 +1,6 @@
 // exp.h - exponential function
 #pragma once
+#include <vector>
 #include "epsilon.h"
 
 namespace fms {
@@ -60,7 +61,7 @@ namespace fms {
 	 std::vector<X> xn(N);
 	 X xn_ = 1; // xn_ = x^n/n!
 	 xn[0] = 1;
-	 for (i = 1; i*I < N; ++i) {
+	 for (size_t i = 1; i*I < N; ++i) {
 	     xn_ *= x/i;
 	     xn[i*I] = xn_;
 	 }

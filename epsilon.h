@@ -2,6 +2,7 @@
 #pragma once
 #include <type_traits>
 #include <valarray>
+#include <complex>
 
 template<class X>
 using IsArithmetic = typename std::enable_if<std::is_arithmetic<X>::value>::type;
@@ -63,14 +64,6 @@ namespace fms {
         {
             return a[n];
         }
-
-        epsilon& operator-()
-        {
-            operator*=(X(-1));
-
-            return *this;
-        }
-
         epsilon& operator+=(const epsilon& b)
         {
             a += b.a;
@@ -240,3 +233,11 @@ inline fms::epsilon<N, X> operator/(const Y& a, fms::epsilon<N, X> b)
 {
     return (a + fms::epsilon<N,X>()) /= b;
 }
+
+template<size_t N, class X, class = IsArithmetic<X>>
+inline fms::epsilon<N, X> operator-(const fms::epsilon<N, X>& x)
+{
+    return X(-1) * x;
+}
+
+
