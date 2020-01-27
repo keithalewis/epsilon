@@ -3,6 +3,23 @@
 
 using namespace fms;
 
+
+
+template<size_t N, class X = double>
+int test_op_minus()
+{
+    epsilon<N, X> x(1, 2);
+    auto y = -x;
+    auto x1 = epsilon<N, X>(1, 2);
+    assert(x == x1);
+    assert(y[0] == -x[0]);
+    assert(y[1] == -x[1]);
+
+    return 0;
+}
+int test_op_minus_ = test_op_minus<3>();
+
+
 template<size_t N, class X = double>
 int test_sub()
 {
