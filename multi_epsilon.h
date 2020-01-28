@@ -258,6 +258,10 @@ namespace fms {
 				std::cout << std::endl;
 			}
 		}
+
+		size_t size() {
+			return m_lpBuf.size();
+		}
 	
 	};
 }
