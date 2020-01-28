@@ -153,10 +153,7 @@
     <ClInclude Include="epsilon.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="hermite.h" />
-    <ClInclude Include="multi_epsilon.h" />
-    <ClInclude Include="normal.h" />
     <ClInclude Include="pow.h" />
-    <ClInclude Include="TriangularMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="add.t.cpp" />
@@ -169,10 +166,7 @@
     <ClCompile Include="exp.t.cpp" />
     <ClCompile Include="expression.t.cpp" />
     <ClCompile Include="hermite.t.cpp" />
-    <ClCompile Include="mul.t.cpp" />
     <ClCompile Include="norm.t.cpp" />
-    <ClCompile Include="matrixtest.cpp" />
-    <ClCompile Include="normal.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
   <ItemGroup>
