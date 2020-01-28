@@ -21,19 +21,10 @@
     <ClInclude Include="hermite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="exp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="bell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TriangularMatrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="normal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="multi_epsilon.h">
@@ -71,16 +62,7 @@
     <ClCompile Include="expression.t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="exp.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="norm.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrixtest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="normal.t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cbmo.cpp">
