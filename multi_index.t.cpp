@@ -37,22 +37,42 @@ int test_multi_index_ = test_multi_index();
 int test_multinomial()
 {
 	using i = multi_index;
-	multinomial a({ 
-		{ i{ 1, 0 }, 2 }, // 2 x_0 +
-		{ i{ 0, 1 }, 3 }, // 3 x_1
-	});
-	auto a2 = a * a; // 4 x_0^2 + 9 x_1^2 + 12 x_0 x_1
-	assert (a2.size() == 3);
-	auto a20 = a2[i{ 2, 0 }];
-	assert(a20 == 4);
-	auto a02 = a2[i{ 0, 2 }];
-	assert(a02 == 9);
-	auto a11 = a2[i{ 1, 1 }];
-	assert(a11 == 12);
+	{
+		multinomial a({
+			{ i{ 1, 0 }, 2 }, // 2 x_0
+			{ i{ 0, 1 }, 3 }, // + 3 x_1
+			});
+		auto a2 = a * a; // 4 x_0^2 + 9 x_1^2 + 12 x_0 x_1
+		assert(a2.size() == 3);
+		auto a20 = a2[i{ 2, 0 }];
+		assert(a20 == 4);
+		auto a02 = a2[i{ 0, 2 }];
+		assert(a02 == 9);
+		auto a11 = a2[i{ 1, 1 }];
+		assert(a11 == 12);
 
-	auto a0 = a2 - a2;
-	for (const auto& [k, v] : a0) {
-		assert(v == 0);
+		auto a0 = a2 - a2;
+		for (const auto& [k, v] : a0) {
+			assert(v == 0);
+		}
+	}
+	{
+		multinomial a({
+			{ { i{ 0, 0 } }, 2 }, // 2
+			{ { i{ 1, 0 } }, 3 }  // + 2 x_0
+			});
+		multinomial b({
+			{ i{ 1, 0 }, 4 }, // 4 x_0
+			{ i{ 0, 1 }, 5 }, // + 5 x_1
+			});
+		auto ab = a + b;
+		assert(ab.size() == 3);
+		auto a00 = ab[i{ 0, 0 }];
+		assert(2 == a00);
+		auto a10 = ab[i{ 1, 0 }];
+		assert(7 == a10);
+		auto a01 = ab[i{ 0, 1 }];
+		assert(5 == a01);
 	}
 
 	return 0;

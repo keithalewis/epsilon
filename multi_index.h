@@ -63,13 +63,15 @@ inline fms::multi_index operator/(const fms::multi_index& a, const fms::multi_in
 
 inline fms::multinomial operator+(const fms::multinomial& a, const fms::multinomial& b)
 {
-	fms::multinomial c;
+	fms::multinomial c = a;
 
-	for (const auto& [ka, va] : a) {
-		for (const auto& [kb, vb] : b) {
-			if (ka == kb) {
-				c[ka] = va + vb;
-			}
+	for (const auto& [k, v] : b) {
+		const auto i = a.find(k);
+		if (i == a.end()) {
+			c[k] = v;
+		}
+		else {
+			c[k] = i->second + v;
 		}
 	}
 
@@ -77,13 +79,15 @@ inline fms::multinomial operator+(const fms::multinomial& a, const fms::multinom
 }
 inline fms::multinomial operator-(const fms::multinomial& a, const fms::multinomial& b)
 {
-	fms::multinomial c;
+	fms::multinomial c = a;
 
-	for (const auto& [ka, va] : a) {
-		for (const auto& [kb, vb] : b) {
-			if (ka == kb) {
-				c[ka] = va - vb;
-			}
+	for (const auto& [k, v] : b) {
+		const auto i = a.find(k);
+		if (i == a.end()) {
+			c[k] = -v;
+		}
+		else {
+			c[k] = i->second - v;
 		}
 	}
 
