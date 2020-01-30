@@ -78,3 +78,58 @@ int test_multinomial()
 	return 0;
 }
 int test_multinomial_ = test_multinomial();
+
+template<size_t N>
+multinomial epsilon(size_t i)
+{
+	multi_index ei(N);
+	ei[i] = 1;
+
+	return multinomial({ { ei, 1. } });
+}
+template<size_t N>
+multinomial constant(double x)
+{
+	multi_index c(N); // all 0's
+
+	return multinomial({ { c, x } });
+}
+template<size_t N>
+multinomial value(double x)
+{
+	multinomial X = constant<2>(x);
+
+	for (size_t i = 0; i < N; ++i)
+		X = X + epsilon<N>(i);
+
+	return X;
+}
+template<class X>
+X f(const X& x, const X& y)
+{
+	return x * x + x * y;
+}
+// f_x = 2*x + y
+// f_y = x
+// f_xx = 2
+// f_xy = 1
+// f_yy = 0
+int test_multinomial_derivatives()
+{
+	using i = multi_index;
+
+	double x = 2;
+	double y = 3;
+
+	auto X = value<2>(x);
+	auto Y = value<2>(y);
+
+	auto Z = f(X, Y);
+	double F = Z[{0, 0}];
+	assert(F == f(x,y));
+	double Fx = Z[{1, 0}];
+	assert(Fx == 2 * x + y);
+
+	return 0;
+}
+int test_multinomial_derivatives_ = test_multinomial_derivatives();
