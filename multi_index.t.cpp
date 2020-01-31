@@ -105,6 +105,36 @@ multinomial value(double x)
 	return X;
 }
 template<class X>
+X f1(const X& x)
+{
+	return x * x * x;
+}
+// f1_x = 3 x^2
+// f1_xx = 6 x
+// f1_xxx = 6
+// f1_xxxx = 0
+int test_multinomial_derivatve1()
+{
+	using i = multi_index;
+	double x = 2;
+	auto X = constant<1>(x) + epsilon<1>(0);
+	auto F1 = f1(X);
+	auto f1_0 = F1[i{ 0 }];
+	assert(f1_0 == x*x*x);
+	auto f1_1 = F1[i{ 1 }];
+	assert(f1_1 == 3 * x * x);
+	auto f1_2 = F1[i{ 2 }];
+	assert(f1_2 == 6 * x/2);
+	auto f1_3 = F1[i{ 3 }];
+	assert(f1_3 == 6/(2*3));
+
+	assert(F1.find(i{ 4 }) == F1.end());
+
+	return 0;
+}
+int test_multinomial_derivatve1_ = test_multinomial_derivatve1();
+/*
+template<class X>
 X f(const X& x, const X& y)
 {
 	return x * x + x * y;
@@ -133,3 +163,4 @@ int test_multinomial_derivatives()
 	return 0;
 }
 int test_multinomial_derivatives_ = test_multinomial_derivatives();
+*/
