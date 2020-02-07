@@ -9,7 +9,7 @@ namespace fms {
 	using multi_index = std::vector<int>;
 	using multinomial = std::map<multi_index, double>;
 }
-
+/*
 inline bool operator==(const fms::multi_index& a, const fms::multi_index& b)
 {
 	return std::equal(a.begin(), a.end(), b.begin(), b.end());
@@ -18,6 +18,7 @@ inline bool operator!=(const fms::multi_index& a, const fms::multi_index& b)
 {
 	return !operator==(a, b);
 }
+*/
 
 inline fms::multi_index operator*(const fms::multi_index& a, const fms::multi_index& b)
 {

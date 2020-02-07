@@ -133,6 +133,53 @@ int test_multinomial_derivatve1()
 	return 0;
 }
 int test_multinomial_derivatve1_ = test_multinomial_derivatve1();
+
+static int test_epsilon() 
+{
+	using i = fms::multi_index;
+
+	auto c = constant<2>(1);
+	auto e0 = epsilon<2>(0);
+	auto e1 = epsilon<2>(1);
+	assert(e0 != e1);
+	auto e01 = e0 * e1;
+	auto e10 = e1 * e0;
+	assert(e01 == e10);
+	auto ce = (c + e0) * (c + e1); // c*c + c*e0 + c*e1 + e0*e1
+
+	assert(ce.size() == 4);
+	
+	assert(ce.contains({ 0, 0 }));
+	assert(ce[i({0, 0})] == 1);
+	
+	assert(ce.contains({ 0, 1 }));
+	assert(ce[i({ 0, 1 })] == 1);
+	
+	assert(ce.contains({ 1, 0 }));
+	assert(ce[i({ 1, 0 })] == 1);
+	
+	assert(ce.contains({ 1, 1 }));
+	assert(ce[i({ 1, 1 })] == 1);
+
+	auto ce2 = ce * ce; // (1 + e0 + e1 + e0 e1) +
+	                    // (e0 + e0^2 + e0 e1 + e0^2 e1) +
+	                    // (e1 + e0 e1 + e1^2 + e0 e1^2) +
+	                    // (e0 e1 + e0^2 e1 + e0 e1^2 + e0^2 e1^2)
+	                    // = 1 + 2e0 + 2e1 + e0^2 + 4 e0 e1 + e1^2 + 2 e0^2 e1 + 2 e0 e1^2 + e0^2 e1^2
+	assert(ce2[i({ 0, 0 })] == 1);
+	assert(ce2[i({ 1, 0 })] == 2);
+	assert(ce2[i({ 0, 1 })] == 2);
+	assert(ce2[i({ 2, 0 })] == 1);
+	assert(ce2[i({ 1, 1 })] == 4);
+	assert(ce2[i({ 0, 2 })] == 1);
+	assert(ce2[i({ 2, 1 })] == 2);
+	assert(ce2[i({ 1, 2 })] == 2);
+	assert(ce2[i({ 2, 2 })] == 1);
+
+
+	return 0;
+}
+int test_epsilon_ = test_epsilon();
 /*
 template<class X>
 X f(const X& x, const X& y)
