@@ -9,7 +9,7 @@ namespace fms {
     inline X exp(const X& x)
     {
         X ex = 1;
-        X xn_(x); // x^n/n!
+        X xn_(x); // x^n/n! 1
 		
         int n = 1;
         while (fabs(xn_) + X(1) != X(1)) {
