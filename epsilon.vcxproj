@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="add.t.cpp" />
     <ClCompile Include="bell.t.cpp" />
+    <ClCompile Include="cbmo.cpp" />
     <ClCompile Include="constructor.t.cpp" />
     <ClCompile Include="derivative.t.cpp" />
     <ClCompile Include="div.t.cpp" />
@@ -165,7 +166,6 @@
     <ClCompile Include="exp.t.cpp" />
     <ClCompile Include="expression.t.cpp" />
     <ClCompile Include="hermite.t.cpp" />
-    <ClCompile Include="mul.t.cpp" />
     <ClCompile Include="norm.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
