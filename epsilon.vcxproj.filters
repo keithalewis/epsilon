@@ -21,13 +21,13 @@
     <ClInclude Include="hermite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="exp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="bell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_epsilon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,10 +62,10 @@
     <ClCompile Include="expression.t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="exp.t.cpp">
+    <ClCompile Include="norm.t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="norm.t.cpp">
+    <ClCompile Include="cbmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
