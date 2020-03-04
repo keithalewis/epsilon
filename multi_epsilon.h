@@ -14,37 +14,38 @@ namespace fms {
 	private:
 		std::valarray<double> m_lpBuf; // data container
 		size_t m;//how many variables
-		size_t Size;//size of m_lpBuf
+		// size_t Size;//size of m_lpBuf // == m_lpBuf.size()
 		size_t N;//N=2 if only consider 1st order derivative
-		const double zero = 0;
 	public:
 
 		//m variable,  derivatives up to order n
 		multi_epsilon(size_t m = 0, size_t n=0)
-			: Size(pow(n + 1, m)), m_lpBuf(0.0, pow(n+1,m)), N(n+1), m(m) {};
+			: m_lpBuf(0.0, pow(n+1,m)), N(n+1), m(m) 
+		{};
 
 		multi_epsilon(const multi_epsilon& rhs)
-			:Size(rhs.Size), m_lpBuf(rhs.m_lpBuf), N(rhs.N), m(rhs.m)
+			: m_lpBuf(rhs.m_lpBuf), N(rhs.N), m(rhs.m)
 		{};
 
 		
 		multi_epsilon(const std::initializer_list<double>& rhs, size_t m, size_t n)
-			:m_lpBuf(rhs), Size(rhs.size()), N(n+1), m(m) { };
+			:m_lpBuf(rhs), N(n+1), m(m) { };
 
 		multi_epsilon(multi_epsilon&& rhs) noexcept {
-			this->Size = rhs.Size;
 			this->N = rhs.N;
 			this->m = rhs.m;
 			this->m_lpBuf = std::move(rhs.m_lpBuf);
 		};
 
 		~multi_epsilon() {
-			Size = 0;
 		};
+
+		size_t size() const {
+			return m_lpBuf.size();
+		}
 
 
 		multi_epsilon& operator=(const multi_epsilon& rhs) {
-			this->Size = rhs.Size;
 			this->m_lpBuf = rhs.m_lpBuf;
 			this->N = rhs.N;
 			this->m = rhs.m;
@@ -53,7 +54,6 @@ namespace fms {
 
 
 		multi_epsilon& operator=(multi_epsilon&& rhs) noexcept {
-			this->Size = rhs.Size;
 			this->m_lpBuf = std::move(rhs.m_lpBuf);
 			this->N = rhs.N;
 			this->m = rhs.m;
@@ -61,9 +61,10 @@ namespace fms {
 		};
 
 
-
+		// spaceship operator (<=>) implements all comparison operators
+		// #include <compare> and use operator<=>() = default
 		bool operator == (const multi_epsilon& rhs) const {
-			if (this->Size != rhs.Size) return false;
+			if (rhs.size() != size()) return false;
 			if (this->m != rhs.m) return false;
 			if (this->N != rhs.N) return false;
 			return (m_lpBuf == rhs.m_lpBuf).min() == true;
@@ -75,7 +76,7 @@ namespace fms {
 
 		multi_epsilon& operator += (const multi_epsilon& rhs)
 		{
-			assert(rhs.Size == this->Size);
+			assert(rhs.size() == size());
 			assert(rhs.m == this->m);
 			assert(rhs.N == this->N);
 			m_lpBuf += rhs.m_lpBuf;
@@ -91,7 +92,7 @@ namespace fms {
 
 		multi_epsilon& operator -= (const multi_epsilon& rhs)
 		{
-			assert(rhs.Size == this->Size);
+			assert(rhs.size() == size());
 			assert(rhs.m == this->m);
 			assert(rhs.N == this->N);
 			m_lpBuf -= rhs.m_lpBuf;
@@ -110,20 +111,20 @@ namespace fms {
 		multi_epsilon& operator *= (const multi_epsilon& rhs)
 		{
 			//if (!rhs.m_lpBuf) return *this;
-			assert(rhs.Size == this->Size);
+			assert(rhs.size() == size());
 			assert(rhs.m == this->m);
 			assert(rhs.N == this->N);
-			std::valarray<double> temp((double)0, this->Size);
+			std::valarray<double> temp((double)0, size());
 			size_t i = 0;
 			{
-				temp = std::valarray<double>((double)0, Size);
-				for (size_t j = 0; j < Size; j++) {
+				temp = std::valarray<double>((double)0, size());
+				for (size_t j = 0; j < size(); j++) {
 					double t = 0;
 					for (size_t k = 0; k <= j; k++)
 						t += operator()(i, k) * rhs(k, j);
 					temp[j] = t;
 				}
-				//for (size_t j = i; j < this->Size; j++)
+				//for (size_t j = i; j < this->size(); j++)
 				//	m_lpBuf[j] = temp[j];
 				std::swap(m_lpBuf, temp);
 			}
@@ -141,7 +142,7 @@ namespace fms {
 		multi_epsilon& operator /= (const multi_epsilon& rhs)
 		{
 			//if (!rhs.m_lpBuf) return *this;
-			assert(rhs.Size == this->Size);
+			assert(rhs.size() == size());
 			assert(rhs.m == this->m);
 			assert(rhs.N == this->N);
 			multi_epsilon rhs_inv = rhs.inverse();
@@ -164,15 +165,16 @@ namespace fms {
 			return res;
 		}
 
-		const double& operator ()(size_t i, size_t j) const
+		//const double& operator ()(size_t i, size_t j) const
+		double operator ()(size_t i, size_t j) const
 		{
-			assert(i < Size);
-			assert(j < Size);
+			assert(i < size());
+			assert(j < size());
 			assert(j >= i);
 			size_t k = N;
-			while (k <= Size) {
+			while (k <= size()) {
 				if ((i % k) > (j % k))
-					return zero;
+					return 0;
 				k *= N;
 			}
 			return m_lpBuf[j - i];
@@ -180,12 +182,12 @@ namespace fms {
 
 		double& operator ()(size_t i, size_t j)
 		{
-			assert(i < Size);
-			assert(j < Size);
+			assert(i < size());
+			assert(j < size());
 			assert(j >= i);
 			//if (i > j) return 0;//visiting lower triangle element
 			size_t k = N;
-			while (k <= Size) {
+			while (k <= size()) {
 				assert((i % k) <= (j % k));
 				k *= N;
 			}
@@ -204,7 +206,7 @@ namespace fms {
 		multi_epsilon inverse() const {
 			multi_epsilon res(m, N-1);
 			res[0] = 1.0 / m_lpBuf[0];
-			for (size_t i = 1; i < Size; i++) {
+			for (size_t i = 1; i < size(); i++) {
 				double cum_prod = 0;
 				for (size_t j = 0; j < i; j++)
 					cum_prod += res[j] * this->operator()(j, i);
@@ -251,8 +253,8 @@ namespace fms {
 		
 		//print current matrix
 		void print() const {
-			for (size_t i = 0; i < Size; i++) {
-				for (size_t j = 0; j < Size; j++)
+			for (size_t i = 0; i < size(); i++) {
+				for (size_t j = 0; j < size(); j++)
 					if (j < i) std::cout << 0 << ' ';
 					else std::cout << operator()(i, j) << ' ';
 				std::cout << std::endl;

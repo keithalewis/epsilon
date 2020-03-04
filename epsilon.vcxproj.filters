@@ -1,77 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="add.t.cpp" />
+    <ClCompile Include="bell.t.cpp" />
+    <ClCompile Include="cbmo.cpp" />
+    <ClCompile Include="constructor.t.cpp" />
+    <ClCompile Include="derivative.t.cpp" />
+    <ClCompile Include="div.t.cpp" />
+    <ClCompile Include="epsilon.t.cpp" />
+    <ClCompile Include="expression.t.cpp" />
+    <ClCompile Include="hermite.t.cpp" />
+    <ClCompile Include="mul.t.cpp" />
+    <ClCompile Include="multi_index.t.cpp" />
+    <ClCompile Include="norm.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="epsilon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hermite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bell.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_epsilon.h">
-    <ClInclude Include="multi_index.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="epsilon.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="constructor.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="add.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sub.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mul.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="div.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bell.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hermite.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="derivative.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="expression.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="norm.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cbmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="multi_index.t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="bell.h" />
+    <ClInclude Include="epsilon.h" />
+    <ClInclude Include="hermite.h" />
+    <ClInclude Include="multi_epsilon.h" />
+    <ClInclude Include="multi_index.h" />
+    <ClInclude Include="pow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
