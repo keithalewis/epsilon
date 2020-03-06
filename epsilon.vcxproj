@@ -153,6 +153,7 @@
     <ClInclude Include="epsilon.h" />
     <ClInclude Include="hermite.h" />
     <ClInclude Include="multi_epsilon.h" />
+    <ClInclude Include="multi_index.h" />
     <ClInclude Include="pow.h" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClCompile Include="hermite.t.cpp" />
     <ClCompile Include="mul.t.cpp" />
     <ClCompile Include="multinomial.t.cpp" />
+    <ClCompile Include="multi_index.t.cpp" />
     <ClCompile Include="norm.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
