@@ -1,11 +1,9 @@
-#include <cassert>
 #include "epsilon.h"
+#include <cassert>
 
 using namespace fms;
 
-
-template<size_t N, class X = double>
-int test_add()
+template <size_t N, class X = double> int test_add()
 {
     epsilon<N, X> e0(X(0), 1);
     e0 += e0;

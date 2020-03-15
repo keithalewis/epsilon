@@ -1,12 +1,9 @@
-#include <cassert>
 #include "epsilon.h"
+#include <cassert>
 
 using namespace fms;
 
-
-
-template<size_t N, class X = double>
-int test_op_minus()
+template <size_t N, class X = double> int test_op_minus()
 {
     epsilon<N, X> x(1, 2);
     auto y = -x;
@@ -19,9 +16,7 @@ int test_op_minus()
 }
 int test_op_minus_ = test_op_minus<3>();
 
-
-template<size_t N, class X = double>
-int test_sub()
+template <size_t N, class X = double> int test_sub()
 {
     epsilon<N, X> e0(0, 1);
     e0 -= e0;

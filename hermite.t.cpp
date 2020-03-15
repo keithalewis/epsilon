@@ -1,10 +1,9 @@
-#include <cassert>
 #include "hermite.h"
+#include <cassert>
 
 using namespace fms;
 
-template<class X>
-int test_hermite()
+template <class X> int test_hermite()
 {
     X x;
     x = 1;
