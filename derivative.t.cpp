@@ -32,6 +32,14 @@ int test_derivative()
         assert(e[4] == 120);
 
     }
+    {
+        double x = 2;
+        auto x2 = epsilon<4>(x) * epsilon<4>(x);
+        assert(x2[0] == x * x);
+        assert(x2[1] == 2 * x);
+        assert(x2[2] == 2);
+        assert(x2[3] == 0);
+    }
  
     return 0;
 }
