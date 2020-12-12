@@ -13,6 +13,12 @@
     <ClCompile Include="multi_index.t.cpp" />
     <ClCompile Include="norm.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bell.h" />
@@ -21,7 +27,6 @@
     <ClInclude Include="multi_epsilon.h" />
     <ClInclude Include="multi_index.h" />
     <ClInclude Include="pow.h" />
-    <ClInclude Include="normal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

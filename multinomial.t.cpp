@@ -1,7 +1,7 @@
 #include <cassert>
 #include "multi_epsilon.h"
 using namespace fms;
-int test_multinomial()
+static int test_multinomial()
 {
 	
 	{
@@ -64,7 +64,7 @@ int test_multinomial()
 
 	return 0;
 }
-int test_multinomial_ = test_multinomial();
+static int test_multinomial_ = test_multinomial();
 
 
 template<class X>
@@ -76,7 +76,7 @@ X f1(const X& x)
 // f1_xx = 6 x
 // f1_xxx = 6
 // f1_xxxx = 0
-int test_multinomial_derivatve1()
+static int test_multinomial_derivatve1()
 {
 	double x = 2;
 	auto X = multi_epsilon::add_epsilon({ x }, 3)[0];
@@ -108,7 +108,7 @@ int test_multinomial_derivatve1()
 
 	return 0;*/
 }
-int test_multinomial_derivatve1_ = test_multinomial_derivatve1();
+static int test_multinomial_derivatve1_ = test_multinomial_derivatve1();
 
 static int test_epsilon()
 {
@@ -182,4 +182,40 @@ static int test_epsilon()
 
 	return 0;*/
 }
-int test_epsilon_ = test_epsilon();
+static int test_epsilon_ = test_epsilon();
+
+template<class X>
+X f2(const X& x, const X& y)
+{
+	return x * x * x + x*y;
+}
+// f2_x = 3 x^2 + y
+// f2_xx = 6 x
+// f2_xxx = 6
+// f2_xxxx = 0
+// f2_y = x
+// f2_yy = 0
+// f2_xy = 1
+static int test_multinomial_derivatve2()
+{
+	double x = 2;
+	double y = 3;
+	auto X = multi_epsilon::add_epsilon({ x, y }, 3)[0];
+	auto Y = multi_epsilon::add_epsilon({ x, y }, 3)[1];
+	auto F2 = f2(X, Y);
+	auto f2_0 = F2[multi_epsilon::rep({ 0, 0 }, 3)];
+	assert(f2_0 == x * x * x + x * y);
+	auto f2_x = F2[multi_epsilon::rep({ 1, 0 }, 3)];
+	assert(f2_x == 3 * x * x + y);
+	auto f2_xx = F2[multi_epsilon::rep({ 2, 0 }, 3)];
+	assert(f2_xx == 6 * x / 2);
+	auto f2_xxx = F2[multi_epsilon::rep({ 3, 0 }, 3)];
+	assert(f2_xxx == 6 / (2 * 3));
+	auto f2_y = F2[multi_epsilon::rep({ 0, 1 }, 3)];
+	assert(f2_y == x);
+	auto f2_xy = F2[multi_epsilon::rep({ 1, 1 }, 3)];
+	assert(f2_xy == 1);
+	return 0;
+	
+}
+static int test_multinomial_derivatve2_ = test_multinomial_derivatve2();

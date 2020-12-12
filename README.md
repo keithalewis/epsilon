@@ -1,4 +1,6 @@
-﻿# epsilon
+﻿![C/C++ CI](https://github.com/keithalewis/epsilon/workflows/C/C++%20CI/badge.svg)
+
+# epsilon
 
 This library can be used to compute derivatives of any order to machine precision.
 
