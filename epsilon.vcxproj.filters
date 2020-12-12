@@ -10,7 +10,6 @@
     <ClCompile Include="expression.t.cpp" />
     <ClCompile Include="hermite.t.cpp" />
     <ClCompile Include="mul.t.cpp" />
-    <ClCompile Include="multi_index.t.cpp" />
     <ClCompile Include="norm.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
@@ -24,9 +23,9 @@
     <ClInclude Include="bell.h" />
     <ClInclude Include="epsilon.h" />
     <ClInclude Include="hermite.h" />
-    <ClInclude Include="multi_epsilon.h" />
-    <ClInclude Include="multi_index.h" />
     <ClInclude Include="pow.h" />
+    <ClInclude Include="normal.h" />
+    <ClInclude Include="exp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

@@ -4,10 +4,23 @@
 // The class epsilon represents all upper triangular Toeplitz matrices.
 // It is the smallest algebra containing epsilon.
 // The array (a[n]) corresponds to sum_n a[n] epsilon^n/n!. 
+
 #pragma once
+#include <algorithm>
+#include <compare>
 #include <concepts>
 #include <type_traits>
 #include <valarray>
+
+template<std::floating_point X>
+inline auto operator<=>(const std::valarray<X>& a, const std::valarray<X>& b)
+{
+    if (a.size() != b.size()) {
+        return X(a.size()) <=> X(b.size());
+    }
+
+    return a.min() <=> b.max();
+}
 
 namespace fms {
 
@@ -16,18 +29,15 @@ namespace fms {
         // a[0], ..., a[N-1] is sum_{n < N} a_n epsilon^n/n!
         std::valarray<X> a;
     public:
-        epsilon()
-            : a(X(0), N)
-        {
-            if constexpr (N > 1) {
-                a[1] = 1;
-            }
-        }
-        epsilon(const X& x)
+        // x + epsilon
+        epsilon(const X& x = X(0))
             : a(X(0), N)
         {
             if constexpr (N > 0) {
                 a[0] = x;
+            }
+            if constexpr (N > 1) {
+                a[1] = X(1);
             }
         }
         epsilon(const epsilon&) = default;
@@ -37,17 +47,36 @@ namespace fms {
         ~epsilon()
         { }
 
-        bool operator==(const epsilon& b) const
+        // not all 0
+        explicit operator bool() const
+        {
+            return (a == X(0)).min() == false;
+        }
+        /*
+        auto operator<=>(const epsilon&) const = default;
+        */
+        bool operator==(const epsilon& b) const 
         {
             return (a == b.a).min() == true;
         }
-        bool operator!=(const epsilon& b) const
+        bool operator<(const epsilon& b) const
         {
-            return !operator==(b);
+            return std::lexicographical_compare(a.begin(), a.end(), b.a.begin(), b.a.end(), std::less<X>{});
         }
-        // bool operator< ...
+        bool operator==(const X& x) const
+        {
+            if (a[0] != x) {
+                return false;
+            }
+            for (size_t i = 1; i < size(); ++i) {
+                if (a[i] != 0) {
+                    return false;
+                }
+            }
 
-        size_t size() const
+            return true;
+        }
+        size_t size() const noexcept
         {
             return N;
         }
@@ -81,7 +110,7 @@ namespace fms {
 
             return *this;
         }
-        // sum a_j e^j/j! sum b_k e^k/k!
+        // (sum a_j e^j/j!) (sum b_k e^k/k!)
         // = sum_n sum_{j + k = n} a_j b_{n-j} e^n/j!k!
         // = sum_n [sum_{j + k = n} C(n,j) a_j b_{n-j}] e^n/n!
         epsilon& operator*=(const epsilon& b)
@@ -140,8 +169,13 @@ namespace fms {
             return *this;
         }
 
+        // L-p norm
 		X norm(X p = 1) const
 		{
+            if (p == std::numeric_limits<X>::infinity()) {
+                return abs(a).max();
+            }
+
 			return std::pow(pow(abs(a), p).sum(), X(1)/p);
 		}
 
