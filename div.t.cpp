@@ -3,13 +3,13 @@
 
 using namespace fms;
 
-template<size_t N, class X = double>
+template<size_t N, class X>
 int test_div()
 {
-    epsilon<N, X> e1(X(1), 1);
+    auto e1 = X(1) + epsilon<N, X>{};
     auto e2 = e1 / e1;
-    epsilon<N, X> zero;
-    assert(e2 == 1. + zero);
+    auto e = epsilon<N, X>(X(1));
+    assert(e2 == e);
 
     return 0;
 }

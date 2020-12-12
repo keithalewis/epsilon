@@ -1,54 +1,42 @@
 // epsilon.h - machine precision derivatives 
+//
+// f(x + epsilon) = f(x) + f'(x) epsilon + f''(x) epsilon^2/2! + ...
+// The class epsilon represents all upper triangular Toeplitz matrices.
+// It is the smallest algebra containing epsilon.
+// The array (a[n]) corresponds to sum_n a[n] epsilon^n/n!. 
 #pragma once
+#include <concepts>
 #include <type_traits>
 #include <valarray>
-#include <complex>
-
-template<class X>
-using IsArithmetic = typename std::enable_if<std::is_arithmetic<X>::value>::type;
 
 namespace fms {
 
-    template<size_t N, class X = double, class = IsArithmetic<X>>
+    template<size_t N, std::floating_point X = double>
     class epsilon {
-        // a[0], ..., a[N-1] <-> sum_{k < N} a_k epsilon^k/k!
+        // a[0], ..., a[N-1] is sum_{n < N} a_n epsilon^n/n!
         std::valarray<X> a;
     public:
-        // zero
         epsilon()
             : a(X(0), N)
-        { }
-		// x I
-		epsilon(const X& x)
-			: a(X(0), N)
-		{
-			a[0] = x;
-		}
-        // x0 I + x1 epsilon
-        epsilon(const X& x0, [[maybe_unused]] const X& x1)
+        {
+            if constexpr (N > 1) {
+                a[1] = 1;
+            }
+        }
+        epsilon(const X& x)
             : a(X(0), N)
         {
-            a[0] = x0;
-            if constexpr (N > 1)
-                a[1] = x1;
+            if constexpr (N > 0) {
+                a[0] = x;
+            }
         }
-        epsilon(const X* px)
-            : a(px, N)
-        { }
-        epsilon(std::initializer_list<X> il)
-            : a{il}
+        epsilon(const epsilon&) = default;
+        epsilon& operator=(const epsilon&) = default;
+        epsilon(epsilon&&) = default;
+        epsilon& operator=(epsilon&&) = default;
+        ~epsilon()
         { }
 
-		/*
-		// x I
-		epsilon& operator=(const X& x)
-		{
-			a = X(0);
-			a[0] = x;
-
-			return *this;
-		}
-		*/
         bool operator==(const epsilon& b) const
         {
             return (a == b.a).min() == true;
@@ -59,11 +47,16 @@ namespace fms {
         }
         // bool operator< ...
 
+        size_t size() const
+        {
+            return N;
+        }
         // underlying raw valarray
         const X& operator[](size_t n) const
         {
             return a[n];
         }
+
         epsilon& operator+=(const epsilon& b)
         {
             a += b.a;
@@ -159,82 +152,82 @@ namespace fms {
 //
 // Global operators
 //
-template<size_t N, class X, class = IsArithmetic<X>>
+template<size_t N, std::floating_point X>
 inline X fabs(const fms::epsilon<N,X>& a)
 {
 	return a.norm(X(1));
 }
-template<size_t N, class X, class = IsArithmetic<X>>
+template<size_t N, std::floating_point X>
 inline X norm(const fms::epsilon<N, X>& a, const X& p = 1)
 {
 	return a.norm(p);
 }
 
-template<size_t N, class X>
+template<size_t N, std::floating_point X>
 inline fms::epsilon<N,X> operator+(fms::epsilon<N,X> a, const fms::epsilon<N,X>& b)
 {
     return a += b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator+(fms::epsilon<N, X> a, const Y& b)
 {
     return a += b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator+(const Y& a, fms::epsilon<N, X> b)
 {
     return b += a;
 }
 
-template<size_t N, class X>
+template<size_t N, std::floating_point X>
 inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> a, const fms::epsilon<N, X>& b)
 {
     return a -= b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> a, const Y& b)
 {
     return a -= b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator-(const Y& a, fms::epsilon<N, X> b)
 {
     return -(b -= a);
 }
 
-template<size_t N, class X>
+template<size_t N, std::floating_point X>
 inline fms::epsilon<N, X> operator*(fms::epsilon<N, X> a, const fms::epsilon<N, X>& b)
 {
     return a *= b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator*(fms::epsilon<N, X> a, const Y& b)
 {
     return a *= b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator*(const Y& a, fms::epsilon<N, X> b)
 {
     return b *= a;
 }
 
-template<size_t N, class X>
+template<size_t N, std::floating_point X>
 inline fms::epsilon<N, X> operator/(fms::epsilon<N, X> a, const fms::epsilon<N, X>& b)
 {
     return a /= b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator/(fms::epsilon<N, X> a, const Y& b)
 {
     return a /= b;
 }
-template<size_t N, class X, class Y, class = IsArithmetic<Y>>
+template<size_t N, std::floating_point X, std::floating_point Y>
 inline fms::epsilon<N, X> operator/(const Y& a, fms::epsilon<N, X> b)
 {
     return (a + fms::epsilon<N,X>()) /= b;
 }
 
-template<size_t N, class X, class = IsArithmetic<X>>
+template<size_t N, std::floating_point X>
 inline fms::epsilon<N, X> operator-(const fms::epsilon<N, X>& x)
 {
     return X(-1) * x;

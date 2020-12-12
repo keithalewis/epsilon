@@ -8,9 +8,9 @@ using namespace fms;
 template<size_t N, class X = double>
 int test_op_minus()
 {
-    epsilon<N, X> x(1, 2);
+    auto x = X(1) + X(2) * epsilon<N, X>{};
     auto y = -x;
-    auto x1 = epsilon<N, X>(1, 2);
+    auto x1 = X(1) + X(2) * epsilon<N, X>{};
     assert(x == x1);
     assert(y[0] == -x[0]);
     assert(y[1] == -x[1]);
@@ -23,7 +23,7 @@ int test_op_minus_ = test_op_minus<3>();
 template<size_t N, class X = double>
 int test_sub()
 {
-    epsilon<N, X> e0(0, 1);
+    epsilon<N, X> e0;
     e0 -= e0;
     for (size_t i = 0; i < N; ++i) {
         assert(e0[i] == X(0));

@@ -4,6 +4,7 @@
 using fms::multi_epsilon;
 using std::cout;
 using std::endl;
+
 int mul_test() {
 	//test + number
 	multi_epsilon a(1,1);

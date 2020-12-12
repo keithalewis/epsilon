@@ -22,32 +22,17 @@ X ddp([[maybe_unused]] const X& x)
 int test_derivative()
 {
     {
-        epsilon<5, double> e{ 1, 1, 1, 1, 1 };
+        epsilon<5, double> e0;
+        auto e = 1.0 + e0 + e0*e0 + e0*e0*e0 + e0*e0*e0*e0;
         e *= e;
         assert(e[0] == 1);
         assert(e[1] == 2);
-        assert(e[2] == 4);
-        assert(e[3] == 8);
-        assert(e[4] == 16);
+        assert(e[2] == 6);
+        assert(e[3] == 24);
+        assert(e[4] == 120);
 
     }
-    {
-        epsilon<5, double> e(0, 1);
-        auto e1 = e;
-        e1 *= e; assert(e1 == epsilon<5>({ 0, 0, 2, 0, 0 }));
-        e1 *= e; assert(e1 == epsilon<5>({ 0, 0, 0, 6, 0 }));
-        e1 *= e; assert(e1 == epsilon<5>({ 0, 0, 0, 0, 24 }));
-        e1 *= e; assert(e1 == epsilon<5>({ 0, 0, 0, 0, 0 }));
-    }
-    {
-        double x = 1;
-        epsilon<3, double> e(x, 1);
-        auto pe = p(e);
-        assert(pe[0] == p(x));
-        assert(pe[1] == dp(x));
-        assert(pe[2] == ddp(x));
-    }
-
+ 
     return 0;
 }
 

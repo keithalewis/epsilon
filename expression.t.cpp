@@ -9,7 +9,7 @@ auto test_expression()
 {
     X x = 0;
     Y y = 1;
-    epsilon<2, Z> z(3, 1);
+    auto z = Z(3) + epsilon<2, Z>{};
 
     return x + y * z - z/z;
 }
@@ -18,8 +18,6 @@ auto test_expression()
 #pragma warning(disable: 4244 4267)
 static int t = [] {
     auto t1 = test_expression<double, double, double>();
-    auto t2 = test_expression<int, double, size_t>();
-    auto t3 = test_expression<double, long, short>();
 
     return 0;
 }();

@@ -9,11 +9,13 @@ int test_norm()
 {
 	{
 		epsilon<N,X> e;
-		assert(0 == e.norm());
+		if constexpr (N > 1) {
+			assert(1 == e.norm());
+		}
 	}
 	{
 		X x = 1;
-		epsilon<N, X> e(x, 1);
+		auto e = x + epsilon<N, X>{};
 		assert(x + X(1)*(N > 1) == e.norm());
 		assert(sqrt(x*x + X(1) * (N > 1)) == e.norm(2));
 	}

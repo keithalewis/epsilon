@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="add.t.cpp" />
     <ClCompile Include="bell.t.cpp" />
-    <ClCompile Include="cbmo.cpp" />
     <ClCompile Include="constructor.t.cpp" />
     <ClCompile Include="derivative.t.cpp" />
     <ClCompile Include="div.t.cpp" />
@@ -22,8 +21,10 @@
     <ClInclude Include="multi_epsilon.h" />
     <ClInclude Include="multi_index.h" />
     <ClInclude Include="pow.h" />
+    <ClInclude Include="normal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="NOTES.md" />
   </ItemGroup>
 </Project>

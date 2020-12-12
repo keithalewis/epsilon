@@ -154,24 +154,29 @@
     <ClInclude Include="hermite.h" />
     <ClInclude Include="multi_epsilon.h" />
     <ClInclude Include="multi_index.h" />
+    <ClInclude Include="normal.h" />
     <ClInclude Include="pow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="add.t.cpp" />
     <ClCompile Include="bell.t.cpp" />
-    <ClCompile Include="cbmo.cpp" />
     <ClCompile Include="constructor.t.cpp" />
     <ClCompile Include="derivative.t.cpp" />
     <ClCompile Include="div.t.cpp" />
     <ClCompile Include="epsilon.t.cpp" />
     <ClCompile Include="expression.t.cpp" />
     <ClCompile Include="hermite.t.cpp" />
-    <ClCompile Include="mul.t.cpp" />
-    <ClCompile Include="multi_index.t.cpp" />
+    <ClCompile Include="mul.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="multi_index.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="norm.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NOTES.md" />
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
