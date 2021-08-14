@@ -1,28 +1,23 @@
 // exp.h - exponential function
 #pragma once
-#include <vector>
+#include <cstring>
+#include <cmath>
+#include "epsilon.h"
 #include "bell.h"
 
 namespace fms {
 
-	// exp(sum_{n >= 0} a_n x^n/n!) = sum_{n>0} B_n(a_1,...,a_n) x^n/n!
-	template<class X>
-	inline X exp(const X& x) 
+	// exp(sum_{n >= 0} a_n e^n/n!) = exp(a_0) sum_{n > 0} B_n(a_1,...,a_n) e^n/n!
+	template<size_t N, class X>
+	inline epsilon<N,X> exp(epsilon<N,X> x) 
 	{
-		size_t n = x.size();
-		std::vector<X> B(n);
-		Bell(n, x, &B[0]);
-		X ex = X(1); // exp(x)
-		X xn = X(1); // n^n
-		size_t n_ = 1; // n!
-		for (size_t k = 0; k < n; ++k) {
-			ex += B[k] * xn / X(n_);
-			xn *= x;
-			if (k) {
-				n_ *= k;
-			}
-		}
+		static epsilon<N, X> B;
 
-		return ex;
+		double ex0 = ::exp(x[0]);
+		Bell(N, &x[0], &B[0]);
+		std::swap(x, B);
+		x *= ex0;
+
+		return x;
 	}
 }

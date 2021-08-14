@@ -1,12 +1,9 @@
 // epsilon.h - machine precision derivatives 
-//
-// f(x + epsilon) = f(x) + f'(x) epsilon + f''(x) epsilon^2/2! + ...
-// The class epsilon represents all upper triangular Toeplitz matrices.
-// It is the smallest algebra containing epsilon.
-// The array (a[n]) corresponds to sum_n a[n] epsilon^n/n!. 
+// f(x + epsilon) = sum_{n >= 0} f^{(n)}(x) epsilon^n/n!
 
 #pragma once
 #include <algorithm>
+#include <cmath>
 #include <compare>
 #include <concepts>
 #include <type_traits>
@@ -26,7 +23,7 @@ namespace fms {
 
     template<size_t N, std::floating_point X = double>
     class epsilon {
-        // a[0], ..., a[N-1] is sum_{n < N} a_n epsilon^n/n!
+        // a[0], ..., a[N-1] represents sum_{n < N} a_n epsilon^n/n!
         std::valarray<X> a;
     public:
         // x + epsilon
@@ -38,6 +35,14 @@ namespace fms {
             }
             if constexpr (N > 1) {
                 a[1] = X(1);
+            }
+        }
+        // from array
+        epsilon(size_t n, const X* a_)
+            : a(N)
+        {
+            for (size_t i = 0; i < n and i < N; ++i) {
+                a[i] = a_[i];
             }
         }
         epsilon(const epsilon&) = default;
@@ -80,8 +85,12 @@ namespace fms {
         {
             return N;
         }
-        // underlying raw valarray
-        const X& operator[](size_t n) const
+        // derivatives
+        X operator[](size_t n) const
+        {
+            return n < N ? a[n] : 0;
+        }
+        X& operator[](size_t n)
         {
             return a[n];
         }
@@ -92,6 +101,7 @@ namespace fms {
 
             return *this;
         }
+
         epsilon& operator+=(const X& b)
         {
             a[0] += b;
@@ -175,6 +185,9 @@ namespace fms {
             if (p == std::numeric_limits<X>::infinity()) {
                 return abs(a).max();
             }
+            if (p == 1) {
+                return abs(a).sum();
+            }
 
 			return std::pow(pow(abs(a), p).sum(), X(1)/p);
 		}
@@ -186,6 +199,14 @@ namespace fms {
 //
 // Global operators
 //
+
+// change size
+template<size_t M, size_t N, std::floating_point X>
+inline fms::epsilon<M> resize(const fms::epsilon<N,X>& a)
+{
+    return fms::epsilon<M>(N, &a[0]);
+}
+
 template<size_t N, std::floating_point X>
 inline X fabs(const fms::epsilon<N,X>& a)
 {
@@ -262,7 +283,7 @@ inline fms::epsilon<N, X> operator/(const Y& a, fms::epsilon<N, X> b)
 }
 
 template<size_t N, std::floating_point X>
-inline fms::epsilon<N, X> operator-(const fms::epsilon<N, X>& x)
+inline fms::epsilon<N, X> operator-(fms::epsilon<N, X> x)
 {
     return X(-1) * x;
 }

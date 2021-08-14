@@ -18,6 +18,7 @@
     <ClCompile Include="sub.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
     <ClCompile Include="sub.t.cpp" />
+    <ClCompile Include="exp.t.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bell.h" />

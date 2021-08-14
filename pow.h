@@ -4,7 +4,7 @@
 
 namespace fms {
 
-    template<size_t N, class X, typename IsArithmetic<X>>
+    template<size_t N, class X>
     inline epsilon<N,X> pow(const epsilon<N, X>& x, int n)
     {
         epsilon<N, X> xn;
